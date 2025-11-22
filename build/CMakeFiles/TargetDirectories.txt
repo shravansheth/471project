@@ -1,0 +1,3 @@
+/Users/shravansheth/Desktop/calpoly/471/finalproj/471project/build/CMakeFiles/BaseP2.dir
+/Users/shravansheth/Desktop/calpoly/471/finalproj/471project/build/CMakeFiles/edit_cache.dir
+/Users/shravansheth/Desktop/calpoly/471/finalproj/471project/build/CMakeFiles/rebuild_cache.dir
