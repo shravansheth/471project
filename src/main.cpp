@@ -69,6 +69,9 @@ public:
 	float radius = 5.0f; // distance from camera to lookAt point
 	glm::vec3 camPos = glm::vec3(0, 1.0, 3.0);
 
+	glm::vec3 camFront = glm::vec3(0.0f, 0.0f, -1.0f);
+	glm::vec3 camRight = glm::vec3(1.0f, 0.0f, 0.0f);
+
 	// meshes struct
 	struct MeshSet {
 		std::vector<std::shared_ptr<Shape>> parts;
@@ -99,11 +102,20 @@ public:
 		{
 			glfwSetWindowShouldClose(window, GL_TRUE);
 		}
-		if (key == GLFW_KEY_A && action == GLFW_PRESS) {
-			gSceneAngleY += 0.05f;
-		}
-		if (key == GLFW_KEY_D && action == GLFW_PRESS) {
-			gSceneAngleY -= 0.05f;
+		// if (key == GLFW_KEY_A && action == GLFW_PRESS) {
+		// 	gSceneAngleY += 0.05f;
+		// }
+		// if (key == GLFW_KEY_D && action == GLFW_PRESS) {
+		// 	gSceneAngleY -= 0.05f;
+		// }
+
+		if (action == GLFW_PRESS || action == GLFW_REPEAT) {
+			float speed = 0.2f;
+
+			if (key == GLFW_KEY_W) camPos += camFront * speed;
+			if (key == GLFW_KEY_S) camPos -= camFront * speed;
+			if (key == GLFW_KEY_A) camPos -= camRight * speed;
+			if (key == GLFW_KEY_D) camPos += camRight * speed;
 		}
 
 		if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
@@ -143,7 +155,7 @@ public:
 	{
     float sens = 0.05f;
 
-    yaw   += deltaX * sens;
+    yaw   -= deltaX * sens;
     pitch += deltaY * sens;
 
     // clamp pitch so camera never flips
@@ -438,6 +450,9 @@ public:
 		float z = radius * cos(pitch) * cos((3.14f/2.0f) - yaw);
 
 		glm::vec3 lookAtPoint = camPos + glm::vec3(x, y, z);
+
+		camFront = glm::normalize(glm::vec3(x, y, z));
+		camRight = glm::normalize(glm::cross(camFront, glm::vec3(0,1,0)));
 
 		View->lookAt(camPos, lookAtPoint, glm::vec3(0,1,0)); 
 		//View->rotate(glm::radians(10.0f), glm::vec3(1, 0, 0));
