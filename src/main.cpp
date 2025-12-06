@@ -77,10 +77,14 @@ public:
 
 	std::vector<BunnyInstance> bunnyForest;
 
-	float yaw   = -1.5f; // horizontal rotation
-	float pitch = 0.0f; // vertical rotation
+	// float yaw   = -1.5f; // horizontal rotation
+	// float pitch = 0.0f; // vertical rotation
+
+	float yaw   = 3.2f; // horizontal rotation
+	float pitch = -0.30f; // vertical rotation
+
 	float radius = 5.0f; // distance from camera to lookAt point
-	glm::vec3 camPos = glm::vec3(0, 1.0, 3.0);
+	glm::vec3 camPos = glm::vec3(5, 0.0, 4.0);
 
 	glm::vec3 camFront = glm::vec3(0.0f, 0.0f, -1.0f);
 	glm::vec3 camRight = glm::vec3(1.0f, 0.0f, 0.0f);
@@ -100,7 +104,7 @@ public:
 		glm::mat4 N = glm::mat4(1.0f);
 	};
 
-	MeshSet table, hammer, plank, doghouse, dog, nail, bowl, plane, bunny, crib, bed, shed;
+	MeshSet table, hammer, plank, doghouse, dog, nail, bowl, plane, bunny, crib, bed, shed, shop;
 
 	float gSceneAngleY = 0.2f;
 	bool gAnimate = false;
@@ -410,10 +414,11 @@ public:
 		nail = loadOBJAsMeshSet(resourceDirectory + "/nail.obj");
 		bowl = loadOBJAsMeshSet(resourceDirectory + "/bowl.obj");
 		plane = loadOBJAsMeshSet(resourceDirectory + "/plane.obj");
-		bunny = loadOBJAsMeshSet(resourceDirectory + "/bunnyNoNorm.obj");
+		bunny = loadOBJAsMeshSet(resourceDirectory + "/phorium.obj");
 		crib = loadOBJAsMeshSet(resourceDirectory + "/cribuv.obj");
 		bed = loadOBJAsMeshSet(resourceDirectory + "/bed.obj");
 		shed = loadOBJAsMeshSet(resourceDirectory + "/shed.obj");
+		shop = loadOBJAsMeshSet(resourceDirectory + "/shop1.obj");
 	}
 
 	void initTex(const string &resourceDirectory)
@@ -443,7 +448,7 @@ public:
 		bedTex->setWrapModes(GL_REPEAT, GL_REPEAT);
 
 		shedTex = make_shared<Texture>();
-		shedTex->setFilename(resourceDirectory + "/shedtex.jpg");
+		shedTex->setFilename(resourceDirectory + "/oak.jpg");
 		shedTex->init();
 		shedTex->setUnit(0);
 		shedTex->setWrapModes(GL_REPEAT, GL_REPEAT);
@@ -460,7 +465,7 @@ public:
         // random position
         b.pos = glm::vec3(
             (rand() % 200 - 100) / 10.0f,
-            -1.5f + (rand() % 20) / 100.0f,
+            -2.3f,
             -5.0f - (rand() % 100) / 10.0f
         );
 
@@ -678,7 +683,6 @@ public:
 			View->loadIdentity();
 			View->lookAt(g_eye, g_lookAt, glm::vec3(0,1,0));
 
-			// also override your other camera variables so the rest of your code works
 			camPos = g_eye;
 			camFront = normalize(g_lookAt - g_eye);
 
@@ -888,7 +892,7 @@ public:
 		Model->translate(vec3(0.0f, -1.9f, 10.0f));
 		Model->rotate(radians(20.0f), vec3(0,1,0));  
 		Model->rotate(radians(160.0f), vec3(0,1,0));
-		Model->scale(vec3(3.0f, 7.0f, 3.0f));
+		Model->scale(vec3(3.0f, 8.0f, 3.0f));
 
 		Model->multMatrix(shed.N);
 		setModel(texProg, Model);
@@ -915,6 +919,27 @@ public:
 		texProg->unbind();
 
 		texProg->unbind();
+
+		// SHOP
+		lightingProg->bind();
+		glUniformMatrix4fv(lightingProg->getUniform("P"), 1, GL_FALSE, value_ptr(Projection->topMatrix()));
+		glUniformMatrix4fv(lightingProg->getUniform("V"), 1, GL_FALSE, value_ptr(View->topMatrix()));
+		glUniform3fv(lightingProg->getUniform("lightPos"), 1, value_ptr(lightPos));
+		glUniform3f(lightingProg->getUniform("LightColor"), 1.0f, 1.0f, 1.0f);
+
+		SetMaterial(lightingProg, 3);  // or 8 if you want "weathered wood"
+
+		Model->pushMatrix();
+		Model->translate(vec3(0.0f, -2.8f, 2.7f));
+		Model->rotate(radians(90.0f), vec3(0,1,0));
+		Model->rotate(radians(90.0f), vec3(-1,0,0));
+		Model->scale(vec3(2.7f));
+		Model->multMatrix(shop.N);
+		setModel(lightingProg, Model);
+		drawMeshSet(lightingProg, shop);
+		Model->popMatrix();
+
+		lightingProg->unbind();
 
 		// table and stuff
 		lightingProg->bind();
