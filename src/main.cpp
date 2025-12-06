@@ -104,7 +104,7 @@ public:
 		glm::mat4 N = glm::mat4(1.0f);
 	};
 
-	MeshSet table, hammer, plank, doghouse, dog, nail, bowl, plane, bunny, crib, bed, shed, shop;
+	MeshSet table, hammer, plank, doghouse, dog, nail, bowl, plane, bunny, crib, bed, shed, shop, sphere, antenna, screwdriver;
 
 	float gSceneAngleY = 0.2f;
 	bool gAnimate = false;
@@ -419,6 +419,9 @@ public:
 		bed = loadOBJAsMeshSet(resourceDirectory + "/bed.obj");
 		shed = loadOBJAsMeshSet(resourceDirectory + "/shed.obj");
 		shop = loadOBJAsMeshSet(resourceDirectory + "/shop1.obj");
+		sphere = loadOBJAsMeshSet(resourceDirectory + "/sphere.obj");
+		antenna = loadOBJAsMeshSet(resourceDirectory + "/antenna.obj");
+		screwdriver = loadOBJAsMeshSet(resourceDirectory + "/screwdriver.obj");
 	}
 
 	void initTex(const string &resourceDirectory)
@@ -540,6 +543,243 @@ public:
 		for (const auto &p : ms.parts)
 			p->draw(prog);
 	}
+
+
+	void drawRobotGuard(std::shared_ptr<MatrixStack> Model,
+        std::shared_ptr<Program> shader)
+	{
+		float t = (float)glfwGetTime();
+
+		// =========================
+		//  ROBOT GLOBAL TRANSFORM
+		// =========================
+		glm::vec3 robotBase = glm::vec3(3.6f, -1.3f, -1.0f);   // behind the table
+
+		SetMaterial(shader, 7); // silver material
+
+		Model->pushMatrix();
+
+		// Position robot + bounce
+		Model->translate(robotBase);
+		Model->scale(glm::vec3(0.75f));   // half-size robot
+		Model->rotate(radians(-105.0f), glm::vec3(0,1,0));
+		float bounce = 0.05f * sin(t * 2.0f);
+		Model->translate(glm::vec3(0.0f, bounce, 0.0f));
+
+
+		// ======================
+		//        TORSO
+		// ======================
+		Model->pushMatrix();
+			Model->scale(glm::vec3(0.6f, 0.9f, 0.35f));
+			Model->multMatrix(sphere.N);
+			setModel(shader, Model);
+			drawMeshSet(shader, sphere);
+		Model->popMatrix();
+
+
+		// ======================
+		//         HEAD
+		// ======================
+		float headYaw = radians(20.0f) * sin(t * 1.2f);
+
+		Model->pushMatrix();
+			Model->translate(glm::vec3(0.0f, 1.0f, 0.0f));
+			Model->rotate(headYaw, glm::vec3(0,1,0));
+			Model->scale(glm::vec3(0.35f));
+			Model->multMatrix(sphere.N);
+			setModel(shader, Model);
+			drawMeshSet(shader, sphere);
+		Model->popMatrix();
+
+
+		// ======================
+		//        ANTENNA
+		// ======================
+		float antennaTilt = radians(10.0f) * sin(t * 4.0f);
+
+		Model->pushMatrix();
+			Model->translate(glm::vec3(0.0f, 1.4f, 0.0f));
+			Model->rotate(antennaTilt, glm::vec3(0,0,1));
+			Model->scale(glm::vec3(0.5f, 0.3f, 0.2f));
+			Model->multMatrix(antenna.N);
+			setModel(shader, Model);
+			drawMeshSet(shader, antenna);
+		Model->popMatrix();
+
+
+		// ======================
+		// LEFT ARM (idle)
+		// ======================
+		Model->pushMatrix();
+			Model->translate(glm::vec3(-0.5f, 0.7f, 0.0f));
+			Model->rotate(radians(10.0f), glm::vec3(1,0,0));
+
+			// Upper arm
+			Model->pushMatrix();
+				Model->translate(glm::vec3(0.0f, -0.25f, 0.0f));
+				Model->scale(glm::vec3(0.15f, 0.35f, 0.15f));
+				Model->multMatrix(sphere.N);
+				setModel(shader, Model);
+				drawMeshSet(shader, sphere);
+			Model->popMatrix();
+
+			// Forearm
+			Model->pushMatrix();
+				Model->translate(glm::vec3(0.0f, -0.55f, 0.0f));
+				Model->scale(glm::vec3(0.15f, 0.35f, 0.15f));
+				Model->multMatrix(sphere.N);
+				setModel(shader, Model);
+				drawMeshSet(shader, sphere);
+			Model->popMatrix();
+		Model->popMatrix();
+
+
+		// // ======================
+		// // RIGHT ARM (hammering)
+		// // ======================
+		// Model->pushMatrix();
+		// 	Model->translate(glm::vec3(0.5f, 0.7f, 0.0f));
+
+		// 	float hammerAngle = radians(50.0f) * abs(sin(t * 2.5f));
+		// 	Model->rotate(radians(-70.0f) - hammerAngle, glm::vec3(1,0,0));
+
+		// 	// Upper arm
+		// 	Model->pushMatrix();
+		// 		Model->translate(glm::vec3(0.0f, -0.25f, 0.0f));
+		// 		Model->scale(glm::vec3(0.15f, 0.35f, 0.15f));
+		// 		Model->multMatrix(sphere.N);
+		// 		setModel(shader, Model);
+		// 		drawMeshSet(shader, sphere);
+		// 	Model->popMatrix();
+
+		// 	// Forearm
+		// 	Model->pushMatrix();
+		// 		Model->translate(glm::vec3(0.0f, -0.65f, 0.05f));
+		// 		Model->rotate(radians(-15.0f), glm::vec3(1,0,0));
+		// 		Model->scale(glm::vec3(0.15f, 0.35f, 0.15f));
+		// 		Model->multMatrix(sphere.N);
+		// 		setModel(shader, Model);
+		// 		drawMeshSet(shader, sphere);
+		// 	Model->popMatrix();
+
+		// 	// Hammer (optional)
+		// 	Model->pushMatrix();
+		// 		Model->translate(glm::vec3(0.0f, -0.95f, 0.1f));
+		// 		Model->rotate(radians(90.0f), glm::vec3(0,0,1));
+		// 		Model->scale(glm::vec3(0.7f));
+		// 		Model->multMatrix(hammer.N);
+		// 		setModel(shader, Model);
+		// 		drawMeshSet(shader, hammer);
+		// 	Model->popMatrix();
+		// Model->popMatrix();
+
+		// ======================
+		// RIGHT ARM (hierarchical hammering)
+		// ======================
+		Model->pushMatrix();
+			// Shoulder joint base position
+			Model->translate(glm::vec3(0.5f, 0.7f, 0.0f));
+
+			// SHOULDER ROTATION (upper arm)
+			float upperSwing = radians(-60.0f) - radians(40.0f) * abs(sin(t * 2.2f));
+			Model->rotate(upperSwing, glm::vec3(1,0,0));
+
+			// ----- UPPER ARM -----
+			Model->pushMatrix();
+				Model->translate(glm::vec3(0.0f, -0.25f, 0.0f));
+				Model->scale(glm::vec3(0.15f, 0.35f, 0.15f));
+				Model->multMatrix(sphere.N);
+				setModel(shader, Model);
+				drawMeshSet(shader, sphere);
+			Model->popMatrix();
+
+
+			// ======================
+			//      ELBOW JOINT
+			// ======================
+			Model->pushMatrix();
+				// move to end of upper arm
+				Model->translate(glm::vec3(0.0f, -0.55f, 0.0f));
+
+				// ELBOW ROTATION (forearm)
+				float forearmSwing = radians(-15.0f) - radians(25.0f) * abs(sin(t * 2.2f + 0.5f));
+				Model->rotate(forearmSwing, glm::vec3(1,0,0));
+
+				// ----- FOREARM -----
+				Model->pushMatrix();
+					Model->translate(glm::vec3(0.0f, -0.25f, 0.05f));
+					Model->scale(glm::vec3(0.15f, 0.35f, 0.15f));
+					Model->multMatrix(sphere.N);
+					setModel(shader, Model);
+					drawMeshSet(shader, sphere);
+				Model->popMatrix();
+
+
+				// ======================
+				//       WRIST JOINT
+				// ======================
+				Model->pushMatrix();
+					// move to end of forearm
+					Model->translate(glm::vec3(0.0f, -0.7f, 0.1f));
+
+					// small wrist rotation to stabilize hammer
+					float wristTilt = radians(5.0f) * sin(t * 3.0f);
+					Model->rotate(wristTilt, glm::vec3(0,0,1));
+
+					// ----- HAMMER -----
+					Model->pushMatrix();
+						Model->rotate(radians(90.0f), glm::vec3(0,0,1));
+						Model->scale(glm::vec3(0.7f));
+						Model->multMatrix(hammer.N);
+						setModel(shader, Model);
+						drawMeshSet(shader, hammer);
+					Model->popMatrix();
+
+				Model->popMatrix();  // end wrist
+
+			Model->popMatrix(); // end elbow
+
+		Model->popMatrix(); // end shoulder
+
+
+		// ======================
+		// STATIC LEGS
+		// ======================
+		auto drawStaticLeg = [&](float xOffset)
+		{
+			float legScale = 0.18f;
+
+			Model->pushMatrix();
+				Model->translate(glm::vec3(xOffset, -0.8f, 0.0f));
+
+				// Upper leg
+				Model->pushMatrix();
+					Model->translate(glm::vec3(0.0f, -0.3f, 0.0f));
+					Model->scale(glm::vec3(legScale, 0.4f, legScale));
+					Model->multMatrix(sphere.N);
+					setModel(shader, Model);
+					drawMeshSet(shader, sphere);
+				Model->popMatrix();
+
+				// Lower leg
+				Model->pushMatrix();
+					Model->translate(glm::vec3(0.0f, -0.75f, 0.02f));
+					Model->scale(glm::vec3(legScale, 0.35f, legScale));
+					Model->multMatrix(sphere.N);
+					setModel(shader, Model);
+					drawMeshSet(shader, sphere);
+				Model->popMatrix();
+			Model->popMatrix();
+		};
+
+		drawStaticLeg(-0.22f);
+		drawStaticLeg( 0.22f);
+
+
+		Model->popMatrix(); // end robot root
+	}
+
 
 	void SetMaterial(shared_ptr<Program> curS, int i)
 	{
@@ -964,12 +1204,12 @@ public:
 		SetMaterial(lightingProg, 7);
 
 		Model->pushMatrix();
-		Model->translate(glm::vec3(2.2f, -1.2f, -1.2f));
-		Model->rotate(glm::radians(-35.0f), glm::vec3(0, 1, 0));
-		Model->scale(vec3(0.5f));
-		Model->multMatrix(hammer.N);
+		Model->translate(glm::vec3(2.2f, -1.25f, 0.0f));
+		//Model->rotate(glm::radians(-35.0f), glm::vec3(0, 1, 0));
+		Model->scale(vec3(0.3f));
+		Model->multMatrix(screwdriver.N);
 		setModel(lightingProg, Model);
-		drawMeshSet(lightingProg, hammer);
+		drawMeshSet(lightingProg, screwdriver);
 		Model->popMatrix();
 
 		// nails
@@ -1035,6 +1275,17 @@ public:
 
 			Model->popMatrix();
 		}
+
+		lightingProg->unbind();
+
+		// robot guard
+		lightingProg->bind();
+		glUniformMatrix4fv(lightingProg->getUniform("P"), 1, GL_FALSE, value_ptr(Projection->topMatrix()));
+		glUniformMatrix4fv(lightingProg->getUniform("V"), 1, GL_FALSE, value_ptr(View->topMatrix()));
+		glUniform3fv(lightingProg->getUniform("lightPos"), 1, value_ptr(lightPos));
+		glUniform3f(lightingProg->getUniform("LightColor"), 1.0f, 1.0f, 1.0f);
+
+		drawRobotGuard(Model, lightingProg);
 
 		lightingProg->unbind();
 
