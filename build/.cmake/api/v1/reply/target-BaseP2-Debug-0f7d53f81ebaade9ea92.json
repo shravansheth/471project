@@ -250,7 +250,9 @@
 				29,
 				30,
 				31,
-				32
+				32,
+				33,
+				34
 			]
 		}
 	],
@@ -430,6 +432,16 @@
 		{
 			"backtrace" : 1,
 			"path" : "resources/tex_vert.glsl",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 1,
+			"path" : "resources/texphong_frag.glsl",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 1,
+			"path" : "resources/texphong_vert.glsl",
 			"sourceGroupIndex" : 2
 		}
 	],
