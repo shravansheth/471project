@@ -736,7 +736,7 @@ public:
 		SetMaterial(lightingProg, 10);
 
 		Model->pushMatrix();
-		Model->translate(vec3(-3.5f, -0.2f, -2.0f));
+		Model->translate(vec3(-3.5f, -1.35f, -2.0f));
 		Model->rotate(radians(20.0f), vec3(0,1,0));
 		Model->scale(vec3(1.8f));
 		Model->multMatrix(doghouse.N);
@@ -760,7 +760,7 @@ public:
 		}
 
 		Model->pushMatrix();
-		Model->translate(glm::vec3(-1.9f, -1.4f, 0.0f));
+		Model->translate(glm::vec3(-1.9f, -2.7f, 0.0f));
 		Model->scale(vec3(0.3f));
 		Model->multMatrix(bowl.N);
 
@@ -782,7 +782,7 @@ public:
 		SetMaterial(lightingProg, 3);
 
 		Model->pushMatrix();
-		Model->translate(glm::vec3(2.2f, -0.9f, -1.2f));
+		Model->translate(glm::vec3(2.2f, -2.0f, -1.2f));
 		Model->rotate(glm::radians(-30.0f), glm::vec3(0, 1, 0));
 		Model->scale(vec3(1.6f));
 		Model->multMatrix(table.N);
@@ -794,7 +794,7 @@ public:
 		SetMaterial(lightingProg, 3);
 
 		Model->pushMatrix();
-		Model->translate(glm::vec3(2.2f, -0.15f, -1.2f));
+		Model->translate(glm::vec3(2.2f, -1.25f, -1.2f));
 		Model->rotate(glm::radians(-30.0f), glm::vec3(0, 1, 0));
 		Model->scale(vec3(1.5f));
 		Model->multMatrix(plank.N);
@@ -806,7 +806,7 @@ public:
 		SetMaterial(lightingProg, 7);
 
 		Model->pushMatrix();
-		Model->translate(glm::vec3(2.2f, -0.12f, -1.2f));
+		Model->translate(glm::vec3(2.2f, -1.2f, -1.2f));
 		Model->rotate(glm::radians(-35.0f), glm::vec3(0, 1, 0));
 		Model->scale(vec3(0.5f));
 		Model->multMatrix(hammer.N);
@@ -817,7 +817,7 @@ public:
 		// nails
 		SetMaterial(lightingProg, 4);
 
-		vec3 tableBase(2.2f, -0.12f, -1.2f);
+		vec3 tableBase(2.2f, -1.25f, -1.0f);
 		float tableTiltY = glm::radians(-30.0f);
 
 		vector<vec3> nailOffsets = {
@@ -891,7 +891,7 @@ public:
 		Model->pushMatrix();
 
 		// Dog movement
-		Model->translate(dogPos + glm::vec3(0.0f, -0.7f, 0.0f));
+		Model->translate(dogPos + glm::vec3(0.0f, -1.9f, 0.0f));
 		float bob = 0.015f * sin((float)t * 6.0f);
 		Model->translate(vec3(0.0f, bob, 0.0f));
 		Model->rotate(glm::radians(70.0f), glm::vec3(0, 1, 0));
