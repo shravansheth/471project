@@ -97,10 +97,24 @@ CMakeFiles/BaseP2.dir/ext/tiny_obj_loader/tiny_obj_loader.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/BaseP2.dir/ext/tiny_obj_loader/tiny_obj_loader.cpp.s"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/ext/tiny_obj_loader/tiny_obj_loader.cpp -o CMakeFiles/BaseP2.dir/ext/tiny_obj_loader/tiny_obj_loader.cpp.s
 
+CMakeFiles/BaseP2.dir/src/Bezier.cpp.o: CMakeFiles/BaseP2.dir/flags.make
+CMakeFiles/BaseP2.dir/src/Bezier.cpp.o: /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/Bezier.cpp
+CMakeFiles/BaseP2.dir/src/Bezier.cpp.o: CMakeFiles/BaseP2.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/shravansheth/Desktop/calpoly/471/finalproj/471project/buildmac/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/BaseP2.dir/src/Bezier.cpp.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/BaseP2.dir/src/Bezier.cpp.o -MF CMakeFiles/BaseP2.dir/src/Bezier.cpp.o.d -o CMakeFiles/BaseP2.dir/src/Bezier.cpp.o -c /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/Bezier.cpp
+
+CMakeFiles/BaseP2.dir/src/Bezier.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/BaseP2.dir/src/Bezier.cpp.i"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/Bezier.cpp > CMakeFiles/BaseP2.dir/src/Bezier.cpp.i
+
+CMakeFiles/BaseP2.dir/src/Bezier.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/BaseP2.dir/src/Bezier.cpp.s"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/Bezier.cpp -o CMakeFiles/BaseP2.dir/src/Bezier.cpp.s
+
 CMakeFiles/BaseP2.dir/src/GLSL.cpp.o: CMakeFiles/BaseP2.dir/flags.make
 CMakeFiles/BaseP2.dir/src/GLSL.cpp.o: /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/GLSL.cpp
 CMakeFiles/BaseP2.dir/src/GLSL.cpp.o: CMakeFiles/BaseP2.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/shravansheth/Desktop/calpoly/471/finalproj/471project/buildmac/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/BaseP2.dir/src/GLSL.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/shravansheth/Desktop/calpoly/471/finalproj/471project/buildmac/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/BaseP2.dir/src/GLSL.cpp.o"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/BaseP2.dir/src/GLSL.cpp.o -MF CMakeFiles/BaseP2.dir/src/GLSL.cpp.o.d -o CMakeFiles/BaseP2.dir/src/GLSL.cpp.o -c /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/GLSL.cpp
 
 CMakeFiles/BaseP2.dir/src/GLSL.cpp.i: cmake_force
@@ -114,7 +128,7 @@ CMakeFiles/BaseP2.dir/src/GLSL.cpp.s: cmake_force
 CMakeFiles/BaseP2.dir/src/MatrixStack.cpp.o: CMakeFiles/BaseP2.dir/flags.make
 CMakeFiles/BaseP2.dir/src/MatrixStack.cpp.o: /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/MatrixStack.cpp
 CMakeFiles/BaseP2.dir/src/MatrixStack.cpp.o: CMakeFiles/BaseP2.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/shravansheth/Desktop/calpoly/471/finalproj/471project/buildmac/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/BaseP2.dir/src/MatrixStack.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/shravansheth/Desktop/calpoly/471/finalproj/471project/buildmac/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/BaseP2.dir/src/MatrixStack.cpp.o"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/BaseP2.dir/src/MatrixStack.cpp.o -MF CMakeFiles/BaseP2.dir/src/MatrixStack.cpp.o.d -o CMakeFiles/BaseP2.dir/src/MatrixStack.cpp.o -c /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/MatrixStack.cpp
 
 CMakeFiles/BaseP2.dir/src/MatrixStack.cpp.i: cmake_force
@@ -128,7 +142,7 @@ CMakeFiles/BaseP2.dir/src/MatrixStack.cpp.s: cmake_force
 CMakeFiles/BaseP2.dir/src/Program.cpp.o: CMakeFiles/BaseP2.dir/flags.make
 CMakeFiles/BaseP2.dir/src/Program.cpp.o: /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/Program.cpp
 CMakeFiles/BaseP2.dir/src/Program.cpp.o: CMakeFiles/BaseP2.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/shravansheth/Desktop/calpoly/471/finalproj/471project/buildmac/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/BaseP2.dir/src/Program.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/shravansheth/Desktop/calpoly/471/finalproj/471project/buildmac/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/BaseP2.dir/src/Program.cpp.o"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/BaseP2.dir/src/Program.cpp.o -MF CMakeFiles/BaseP2.dir/src/Program.cpp.o.d -o CMakeFiles/BaseP2.dir/src/Program.cpp.o -c /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/Program.cpp
 
 CMakeFiles/BaseP2.dir/src/Program.cpp.i: cmake_force
@@ -142,7 +156,7 @@ CMakeFiles/BaseP2.dir/src/Program.cpp.s: cmake_force
 CMakeFiles/BaseP2.dir/src/Shape.cpp.o: CMakeFiles/BaseP2.dir/flags.make
 CMakeFiles/BaseP2.dir/src/Shape.cpp.o: /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/Shape.cpp
 CMakeFiles/BaseP2.dir/src/Shape.cpp.o: CMakeFiles/BaseP2.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/shravansheth/Desktop/calpoly/471/finalproj/471project/buildmac/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/BaseP2.dir/src/Shape.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/shravansheth/Desktop/calpoly/471/finalproj/471project/buildmac/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/BaseP2.dir/src/Shape.cpp.o"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/BaseP2.dir/src/Shape.cpp.o -MF CMakeFiles/BaseP2.dir/src/Shape.cpp.o.d -o CMakeFiles/BaseP2.dir/src/Shape.cpp.o -c /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/Shape.cpp
 
 CMakeFiles/BaseP2.dir/src/Shape.cpp.i: cmake_force
@@ -153,10 +167,24 @@ CMakeFiles/BaseP2.dir/src/Shape.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/BaseP2.dir/src/Shape.cpp.s"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/Shape.cpp -o CMakeFiles/BaseP2.dir/src/Shape.cpp.s
 
+CMakeFiles/BaseP2.dir/src/Spline.cpp.o: CMakeFiles/BaseP2.dir/flags.make
+CMakeFiles/BaseP2.dir/src/Spline.cpp.o: /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/Spline.cpp
+CMakeFiles/BaseP2.dir/src/Spline.cpp.o: CMakeFiles/BaseP2.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/shravansheth/Desktop/calpoly/471/finalproj/471project/buildmac/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/BaseP2.dir/src/Spline.cpp.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/BaseP2.dir/src/Spline.cpp.o -MF CMakeFiles/BaseP2.dir/src/Spline.cpp.o.d -o CMakeFiles/BaseP2.dir/src/Spline.cpp.o -c /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/Spline.cpp
+
+CMakeFiles/BaseP2.dir/src/Spline.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/BaseP2.dir/src/Spline.cpp.i"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/Spline.cpp > CMakeFiles/BaseP2.dir/src/Spline.cpp.i
+
+CMakeFiles/BaseP2.dir/src/Spline.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/BaseP2.dir/src/Spline.cpp.s"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/Spline.cpp -o CMakeFiles/BaseP2.dir/src/Spline.cpp.s
+
 CMakeFiles/BaseP2.dir/src/Texture.cpp.o: CMakeFiles/BaseP2.dir/flags.make
 CMakeFiles/BaseP2.dir/src/Texture.cpp.o: /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/Texture.cpp
 CMakeFiles/BaseP2.dir/src/Texture.cpp.o: CMakeFiles/BaseP2.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/shravansheth/Desktop/calpoly/471/finalproj/471project/buildmac/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/BaseP2.dir/src/Texture.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/shravansheth/Desktop/calpoly/471/finalproj/471project/buildmac/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/BaseP2.dir/src/Texture.cpp.o"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/BaseP2.dir/src/Texture.cpp.o -MF CMakeFiles/BaseP2.dir/src/Texture.cpp.o.d -o CMakeFiles/BaseP2.dir/src/Texture.cpp.o -c /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/Texture.cpp
 
 CMakeFiles/BaseP2.dir/src/Texture.cpp.i: cmake_force
@@ -170,7 +198,7 @@ CMakeFiles/BaseP2.dir/src/Texture.cpp.s: cmake_force
 CMakeFiles/BaseP2.dir/src/WindowManager.cpp.o: CMakeFiles/BaseP2.dir/flags.make
 CMakeFiles/BaseP2.dir/src/WindowManager.cpp.o: /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/WindowManager.cpp
 CMakeFiles/BaseP2.dir/src/WindowManager.cpp.o: CMakeFiles/BaseP2.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/shravansheth/Desktop/calpoly/471/finalproj/471project/buildmac/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/BaseP2.dir/src/WindowManager.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/shravansheth/Desktop/calpoly/471/finalproj/471project/buildmac/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/BaseP2.dir/src/WindowManager.cpp.o"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/BaseP2.dir/src/WindowManager.cpp.o -MF CMakeFiles/BaseP2.dir/src/WindowManager.cpp.o.d -o CMakeFiles/BaseP2.dir/src/WindowManager.cpp.o -c /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/WindowManager.cpp
 
 CMakeFiles/BaseP2.dir/src/WindowManager.cpp.i: cmake_force
@@ -184,7 +212,7 @@ CMakeFiles/BaseP2.dir/src/WindowManager.cpp.s: cmake_force
 CMakeFiles/BaseP2.dir/src/main.cpp.o: CMakeFiles/BaseP2.dir/flags.make
 CMakeFiles/BaseP2.dir/src/main.cpp.o: /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/main.cpp
 CMakeFiles/BaseP2.dir/src/main.cpp.o: CMakeFiles/BaseP2.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/shravansheth/Desktop/calpoly/471/finalproj/471project/buildmac/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/BaseP2.dir/src/main.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/shravansheth/Desktop/calpoly/471/finalproj/471project/buildmac/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/BaseP2.dir/src/main.cpp.o"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/BaseP2.dir/src/main.cpp.o -MF CMakeFiles/BaseP2.dir/src/main.cpp.o.d -o CMakeFiles/BaseP2.dir/src/main.cpp.o -c /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/main.cpp
 
 CMakeFiles/BaseP2.dir/src/main.cpp.i: cmake_force
@@ -199,10 +227,12 @@ CMakeFiles/BaseP2.dir/src/main.cpp.s: cmake_force
 BaseP2_OBJECTS = \
 "CMakeFiles/BaseP2.dir/ext/glad/src/glad.c.o" \
 "CMakeFiles/BaseP2.dir/ext/tiny_obj_loader/tiny_obj_loader.cpp.o" \
+"CMakeFiles/BaseP2.dir/src/Bezier.cpp.o" \
 "CMakeFiles/BaseP2.dir/src/GLSL.cpp.o" \
 "CMakeFiles/BaseP2.dir/src/MatrixStack.cpp.o" \
 "CMakeFiles/BaseP2.dir/src/Program.cpp.o" \
 "CMakeFiles/BaseP2.dir/src/Shape.cpp.o" \
+"CMakeFiles/BaseP2.dir/src/Spline.cpp.o" \
 "CMakeFiles/BaseP2.dir/src/Texture.cpp.o" \
 "CMakeFiles/BaseP2.dir/src/WindowManager.cpp.o" \
 "CMakeFiles/BaseP2.dir/src/main.cpp.o"
@@ -212,17 +242,19 @@ BaseP2_EXTERNAL_OBJECTS =
 
 BaseP2: CMakeFiles/BaseP2.dir/ext/glad/src/glad.c.o
 BaseP2: CMakeFiles/BaseP2.dir/ext/tiny_obj_loader/tiny_obj_loader.cpp.o
+BaseP2: CMakeFiles/BaseP2.dir/src/Bezier.cpp.o
 BaseP2: CMakeFiles/BaseP2.dir/src/GLSL.cpp.o
 BaseP2: CMakeFiles/BaseP2.dir/src/MatrixStack.cpp.o
 BaseP2: CMakeFiles/BaseP2.dir/src/Program.cpp.o
 BaseP2: CMakeFiles/BaseP2.dir/src/Shape.cpp.o
+BaseP2: CMakeFiles/BaseP2.dir/src/Spline.cpp.o
 BaseP2: CMakeFiles/BaseP2.dir/src/Texture.cpp.o
 BaseP2: CMakeFiles/BaseP2.dir/src/WindowManager.cpp.o
 BaseP2: CMakeFiles/BaseP2.dir/src/main.cpp.o
 BaseP2: CMakeFiles/BaseP2.dir/build.make
 BaseP2: /opt/homebrew/lib/libglfw.3.4.dylib
 BaseP2: CMakeFiles/BaseP2.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/Users/shravansheth/Desktop/calpoly/471/finalproj/471project/buildmac/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Linking CXX executable BaseP2"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/Users/shravansheth/Desktop/calpoly/471/finalproj/471project/buildmac/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Linking CXX executable BaseP2"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/BaseP2.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

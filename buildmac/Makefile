@@ -177,6 +177,30 @@ ext/tiny_obj_loader/tiny_obj_loader.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/BaseP2.dir/build.make CMakeFiles/BaseP2.dir/ext/tiny_obj_loader/tiny_obj_loader.cpp.s
 .PHONY : ext/tiny_obj_loader/tiny_obj_loader.cpp.s
 
+src/Bezier.o: src/Bezier.cpp.o
+.PHONY : src/Bezier.o
+
+# target to build an object file
+src/Bezier.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/BaseP2.dir/build.make CMakeFiles/BaseP2.dir/src/Bezier.cpp.o
+.PHONY : src/Bezier.cpp.o
+
+src/Bezier.i: src/Bezier.cpp.i
+.PHONY : src/Bezier.i
+
+# target to preprocess a source file
+src/Bezier.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/BaseP2.dir/build.make CMakeFiles/BaseP2.dir/src/Bezier.cpp.i
+.PHONY : src/Bezier.cpp.i
+
+src/Bezier.s: src/Bezier.cpp.s
+.PHONY : src/Bezier.s
+
+# target to generate assembly for a file
+src/Bezier.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/BaseP2.dir/build.make CMakeFiles/BaseP2.dir/src/Bezier.cpp.s
+.PHONY : src/Bezier.cpp.s
+
 src/GLSL.o: src/GLSL.cpp.o
 .PHONY : src/GLSL.o
 
@@ -273,6 +297,30 @@ src/Shape.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/BaseP2.dir/build.make CMakeFiles/BaseP2.dir/src/Shape.cpp.s
 .PHONY : src/Shape.cpp.s
 
+src/Spline.o: src/Spline.cpp.o
+.PHONY : src/Spline.o
+
+# target to build an object file
+src/Spline.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/BaseP2.dir/build.make CMakeFiles/BaseP2.dir/src/Spline.cpp.o
+.PHONY : src/Spline.cpp.o
+
+src/Spline.i: src/Spline.cpp.i
+.PHONY : src/Spline.i
+
+# target to preprocess a source file
+src/Spline.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/BaseP2.dir/build.make CMakeFiles/BaseP2.dir/src/Spline.cpp.i
+.PHONY : src/Spline.cpp.i
+
+src/Spline.s: src/Spline.cpp.s
+.PHONY : src/Spline.s
+
+# target to generate assembly for a file
+src/Spline.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/BaseP2.dir/build.make CMakeFiles/BaseP2.dir/src/Spline.cpp.s
+.PHONY : src/Spline.cpp.s
+
 src/Texture.o: src/Texture.cpp.o
 .PHONY : src/Texture.o
 
@@ -360,6 +408,9 @@ help:
 	@echo "... ext/tiny_obj_loader/tiny_obj_loader.o"
 	@echo "... ext/tiny_obj_loader/tiny_obj_loader.i"
 	@echo "... ext/tiny_obj_loader/tiny_obj_loader.s"
+	@echo "... src/Bezier.o"
+	@echo "... src/Bezier.i"
+	@echo "... src/Bezier.s"
 	@echo "... src/GLSL.o"
 	@echo "... src/GLSL.i"
 	@echo "... src/GLSL.s"
@@ -372,6 +423,9 @@ help:
 	@echo "... src/Shape.o"
 	@echo "... src/Shape.i"
 	@echo "... src/Shape.s"
+	@echo "... src/Spline.o"
+	@echo "... src/Spline.i"
+	@echo "... src/Spline.s"
 	@echo "... src/Texture.o"
 	@echo "... src/Texture.i"
 	@echo "... src/Texture.s"

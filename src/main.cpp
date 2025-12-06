@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <glad/glad.h>
+#include <chrono>
 
 #include "GLSL.h"
 #include "Program.h"
@@ -16,6 +17,9 @@
 #include "Texture.h"
 #include <cfloat>
 #include <algorithm>
+#include "stb_image.h"
+#include "Spline.h"
+#include "Bezier.h"
 
 #define TINYOBJLOADER_IMPLEMENTATION
 #include <tiny_obj_loader/tiny_obj_loader.h>
@@ -44,6 +48,11 @@ public:
 
 	shared_ptr<Texture> grassTex;
 	shared_ptr<Program> texProg;
+	shared_ptr<Program> skyboxProg;
+
+	GLuint skyboxTex;
+	GLuint skyboxVAO;
+	GLuint skyboxVBO;
 
 	// Our shader program
 	std::shared_ptr<Program> solidColorProg;
@@ -64,13 +73,20 @@ public:
 
 	std::vector<BunnyInstance> bunnyForest;
 
-	float yaw   = 0.0f; // horizontal rotation
+	float yaw   = -1.5f; // horizontal rotation
 	float pitch = 0.0f; // vertical rotation
 	float radius = 5.0f; // distance from camera to lookAt point
 	glm::vec3 camPos = glm::vec3(0, 1.0, 3.0);
 
 	glm::vec3 camFront = glm::vec3(0.0f, 0.0f, -1.0f);
 	glm::vec3 camRight = glm::vec3(1.0f, 0.0f, 0.0f);
+
+	Spline splinepath[2];
+	bool goCamera = false;
+
+	glm::vec3 g_eye = glm::vec3(0, 1, 0); // starting camera position
+	glm::vec3 g_lookAt = glm::vec3(0, 1, -4); // fixed look-at point for tour
+	float lastTimeCam = 0.0f;
 
 	// meshes struct
 	struct MeshSet {
@@ -138,6 +154,27 @@ public:
 		if (key == GLFW_KEY_M && action == GLFW_PRESS) {
 			useAltMaterial = !useAltMaterial;
 		}
+
+		if (key == GLFW_KEY_G && action == GLFW_PRESS) {
+			goCamera = !goCamera;
+			lastTimeCam = glfwGetTime();
+
+			splinepath[0] = Spline(
+				glm::vec3(-6,1.5,7),
+				glm::vec3(-1,0,7),
+				glm::vec3(1,2,7),
+				glm::vec3(2,1.5,7),
+				5.0f
+			);
+
+			splinepath[1] = Spline(
+				glm::vec3(2,1.5,7),
+				glm::vec3(3,0.5,7),
+				glm::vec3(-0.25, 0.25, 7),
+				glm::vec3(0,0,7),
+				5.0f
+			);
+		}
 	}
 
 	void mouseCallback(GLFWwindow *window, int button, int action, int mods)
@@ -167,6 +204,34 @@ public:
 	void resizeCallback(GLFWwindow *window, int width, int height)
 	{
 		glViewport(0, 0, width, height);
+	}
+
+	GLuint loadCubemap(vector<string> faces) {
+    GLuint textureID;
+    glGenTextures(1, &textureID);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+
+    int width, height, nrChannels;
+    for (unsigned int i = 0; i < faces.size(); i++) {
+        unsigned char *data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
+        if (data) {
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+                         0, GL_RGB, width, height, 0, GL_RGB,
+                         GL_UNSIGNED_BYTE, data);
+            stbi_image_free(data);
+        } else {
+            cout << "Failed to load: " << faces[i] << endl;
+            stbi_image_free(data);
+        }
+    }
+
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+    return textureID;
 	}
 
 	void init(const std::string& resourceDirectory)
@@ -230,6 +295,105 @@ public:
 		texProg->addAttribute("vertPos");
 		texProg->addAttribute("vertNor");
 		texProg->addAttribute("vertTex");
+
+		skyboxProg = make_shared<Program>();
+		skyboxProg->setVerbose(true);
+		skyboxProg->setShaderNames(
+			resourceDirectory + "/cube_vert.glsl", 
+			resourceDirectory + "/cube_frag.glsl"
+		);
+		skyboxProg->init();
+		skyboxProg->addUniform("P");
+		skyboxProg->addUniform("V");
+		skyboxProg->addUniform("M");
+		skyboxProg->addUniform("skybox");
+
+		// Skybox
+		skyboxVAO = 0;
+		skyboxVBO = 0;
+
+		float skyboxVertices[] = {
+			// Each vertex: position (x,y,z) + dummy normal (nx,ny,nz)
+			// 6 floats per vertex, 36 vertices total
+
+			// Back face
+			-1.0f, -1.0f, -1.0f, 0.f,0.f,0.f,
+			1.0f, -1.0f, -1.0f, 0.f,0.f,0.f,
+			1.0f,  1.0f, -1.0f, 0.f,0.f,0.f,
+			1.0f,  1.0f, -1.0f, 0.f,0.f,0.f,
+			-1.0f,  1.0f, -1.0f, 0.f,0.f,0.f,
+			-1.0f, -1.0f, -1.0f, 0.f,0.f,0.f,
+
+			// Front face
+			-1.0f, -1.0f,  1.0f, 0.f,0.f,0.f,
+			1.0f, -1.0f,  1.0f, 0.f,0.f,0.f,
+			1.0f,  1.0f,  1.0f, 0.f,0.f,0.f,
+			1.0f,  1.0f,  1.0f, 0.f,0.f,0.f,
+			-1.0f,  1.0f,  1.0f, 0.f,0.f,0.f,
+			-1.0f, -1.0f,  1.0f, 0.f,0.f,0.f,
+
+			// Left face
+			-1.0f,  1.0f,  1.0f, 0.f,0.f,0.f,
+			-1.0f,  1.0f, -1.0f, 0.f,0.f,0.f,
+			-1.0f, -1.0f, -1.0f, 0.f,0.f,0.f,
+			-1.0f, -1.0f, -1.0f, 0.f,0.f,0.f,
+			-1.0f, -1.0f,  1.0f, 0.f,0.f,0.f,
+			-1.0f,  1.0f,  1.0f, 0.f,0.f,0.f,
+
+			// Right face
+			1.0f,  1.0f,  1.0f, 0.f,0.f,0.f,
+			1.0f,  1.0f, -1.0f, 0.f,0.f,0.f,
+			1.0f, -1.0f, -1.0f, 0.f,0.f,0.f,
+			1.0f, -1.0f, -1.0f, 0.f,0.f,0.f,
+			1.0f, -1.0f,  1.0f, 0.f,0.f,0.f,
+			1.0f,  1.0f,  1.0f, 0.f,0.f,0.f,
+
+			// Bottom face
+			-1.0f, -1.0f, -1.0f, 0.f,0.f,0.f,
+			1.0f, -1.0f, -1.0f, 0.f,0.f,0.f,
+			1.0f, -1.0f,  1.0f, 0.f,0.f,0.f,
+			1.0f, -1.0f,  1.0f, 0.f,0.f,0.f,
+			-1.0f, -1.0f,  1.0f, 0.f,0.f,0.f,
+			-1.0f, -1.0f, -1.0f, 0.f,0.f,0.f,
+
+			// Top face
+			-1.0f,  1.0f, -1.0f, 0.f,0.f,0.f,
+			1.0f,  1.0f, -1.0f, 0.f,0.f,0.f,
+			1.0f,  1.0f,  1.0f, 0.f,0.f,0.f,
+			1.0f,  1.0f,  1.0f, 0.f,0.f,0.f,
+			-1.0f,  1.0f,  1.0f, 0.f,0.f,0.f,
+			-1.0f,  1.0f, -1.0f, 0.f,0.f,0.f
+		};
+
+		glGenVertexArrays(1, &skyboxVAO);
+		glGenBuffers(1, &skyboxVBO);
+		glBindVertexArray(skyboxVAO);
+		glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), skyboxVertices, GL_STATIC_DRAW);
+
+		// vertPos = location 0
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6*sizeof(float), (void*)0);
+
+		// vertNor = location 1 (dummy)
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6*sizeof(float), (void*)(3*sizeof(float)));
+
+		glBindVertexArray(0);
+
+		vector<string> faces {
+		resourceDirectory + "/right.jpg",
+		resourceDirectory + "/left.jpg",
+		resourceDirectory + "/top.jpg",
+		resourceDirectory + "/bottom.jpg",
+		resourceDirectory + "/front.jpg",
+		resourceDirectory + "/back.jpg",
+		};
+
+		skyboxTex = loadCubemap(faces);
+
+		splinepath[0] = Spline(glm::vec3(-6,0,5),glm::vec3(-1,-5,5),glm::vec3(1, 5, 5),glm::vec3(2,0,5),5.0f);
+		splinepath[1] = Spline(glm::vec3(2,0,5),glm::vec3(3,-2,5),glm::vec3(-0.25, 0.25, 5),glm::vec3(0,0,5),5.0f);
 	}
 
 	void initGeom(const std::string& resourceDirectory)
@@ -426,8 +590,25 @@ public:
     }
 	}
 
+	void updateUsingCameraPath(float deltaTime) {
+		if (goCamera) {
+			if (!splinepath[0].isDone()) {
+				splinepath[0].update(deltaTime);
+				g_eye = splinepath[0].getPosition();
+			} else {
+				splinepath[1].update(deltaTime);
+				g_eye = splinepath[1].getPosition();
+			}
+		}
+	}
+
+	void SetView(shared_ptr<Program> shader, shared_ptr<MatrixStack> View) {
+    	glm::mat4 Cam = glm::lookAt(g_eye, g_lookAt, glm::vec3(0,1,0));
+    	glUniformMatrix4fv(shader->getUniform("V"), 1, GL_FALSE, glm::value_ptr(Cam));
+	}
+
 	
-	void render(){
+	void render(float frametime){
 		int width, height;
 		glfwGetFramebufferSize(windowManager->getHandle(), &width, &height);
 		glViewport(0, 0, width, height);
@@ -445,6 +626,7 @@ public:
 		View->loadIdentity();
 		
 		View->translate(vec3(0, 0, -3));
+		updateUsingCameraPath(frametime);
 		float x = radius * cos(pitch) * cos(yaw);
 		float y = radius * sin(pitch);
 		float z = radius * cos(pitch) * cos((3.14f/2.0f) - yaw);
@@ -454,7 +636,20 @@ public:
 		camFront = glm::normalize(glm::vec3(x, y, z));
 		camRight = glm::normalize(glm::cross(camFront, glm::vec3(0,1,0)));
 
-		View->lookAt(camPos, lookAtPoint, glm::vec3(0,1,0)); 
+		//View->lookAt(camPos, lookAtPoint, glm::vec3(0,1,0)); 
+		if (goCamera) {
+			// cinematic spline camera
+			View->loadIdentity();
+			View->lookAt(g_eye, g_lookAt, glm::vec3(0,1,0));
+
+			// also override your other camera variables so the rest of your code works
+			camPos = g_eye;
+			camFront = normalize(g_lookAt - g_eye);
+
+		} else {
+			// your normal camera
+			View->lookAt(camPos, lookAtPoint, glm::vec3(0,1,0));
+		}
 		//View->rotate(glm::radians(10.0f), glm::vec3(1, 0, 0));
 		vec3 lightPos = vec3(2.0f + lightTrans, 3.0f, 4.0f);
 		
@@ -484,6 +679,32 @@ public:
 		}
 
 		glm::vec3 dogPos = currentDogPos;
+
+		// Skybox render
+		glDepthFunc(GL_LEQUAL);
+		glDepthMask(GL_FALSE);
+
+		skyboxProg->bind();
+
+		// remove translation from view matrix
+		glm::mat4 viewNoTranslate = glm::mat4(glm::mat3(View->topMatrix()));
+
+		glUniformMatrix4fv(skyboxProg->getUniform("P"), 1, GL_FALSE, value_ptr(Projection->topMatrix()));
+		glUniformMatrix4fv(skyboxProg->getUniform("V"), 1, GL_FALSE, value_ptr(viewNoTranslate));
+		glUniformMatrix4fv(skyboxProg->getUniform("M"), 1, GL_FALSE, value_ptr(glm::mat4(1.0f)));
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxTex);
+		glUniform1i(skyboxProg->getUniform("skybox"), 0);
+
+		glBindVertexArray(skyboxVAO);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+		glBindVertexArray(0);
+
+		skyboxProg->unbind();
+
+		glDepthMask(GL_TRUE);
+		glDepthFunc(GL_LESS);
 
 		Model->pushMatrix();
 		Model->rotate(gSceneAngleY, vec3(0, -1, 0));
@@ -714,11 +935,27 @@ int main(int argc, char *argv[])
 	application->generateBunnyForest();
 	application->initTex(resourceDir);
 
+	auto lastTime = chrono::high_resolution_clock::now();
 	// Loop until the user closes the window.
 	while (! glfwWindowShouldClose(windowManager->getHandle()))
 	{
+		// save current time for next frame
+		auto nextLastTime = chrono::high_resolution_clock::now();
+
+		// get time since last frame
+		float deltaTime =
+			chrono::duration_cast<std::chrono::microseconds>(
+				chrono::high_resolution_clock::now() - lastTime)
+				.count();
+		// convert microseconds (weird) to seconds (less weird)
+		deltaTime *= 0.000001;
+
+		// reset lastTime so that we can calculate the deltaTime
+		// on the next frame
+		lastTime = nextLastTime;
+
 		// Render scene.
-		application->render();
+		application->render(deltaTime);
 
 		// Swap front and back buffers.
 		glfwSwapBuffers(windowManager->getHandle());

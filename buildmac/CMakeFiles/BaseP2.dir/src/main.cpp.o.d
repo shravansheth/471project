@@ -787,6 +787,9 @@ CMakeFiles/BaseP2.dir/src/main.cpp.o: \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.1.sdk/usr/include/inttypes.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.1.sdk/usr/include/_inttypes.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.1.sdk/usr/include/xlocale/_inttypes.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.1.sdk/usr/include/c++/v1/chrono \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.1.sdk/usr/include/c++/v1/__chrono/file_clock.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.1.sdk/usr/include/c++/v1/forward_list \
   /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/GLSL.h \
   /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/Program.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.1.sdk/usr/include/c++/v1/map \
@@ -1103,4 +1106,7 @@ CMakeFiles/BaseP2.dir/src/main.cpp.o: \
   /opt/homebrew/include/glm/gtc/matrix_transform.hpp \
   /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/WindowManager.h \
   /opt/homebrew/include/GLFW/glfw3.h \
-  /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/Texture.h
+  /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/Texture.h \
+  /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/stb_image.h \
+  /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/Spline.h \
+  /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/Bezier.h
