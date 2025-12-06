@@ -13,12 +13,20 @@ void main()
 {
     vec3 texColor = texture(Texture0, vTexCoord).rgb;
 
-    vec3 normal = normalize(fragNor);
-    vec3 light = normalize(lightPos - EPos);
+    vec3 N = normalize(fragNor);
 
-    float dC = max(dot(normal, light), 0.0);
+    // Light and eye vectors in eye space
+    vec3 L = normalize(lightPos - EPos);
+    vec3 V = normalize(-EPos);
+    vec3 R = reflect(-L, N);
 
-    vec3 final = texColor * dC;
+    // Phong components
+    float diff = max(dot(N, L), 0.0);
+    float spec = pow(max(dot(R, V), 0.0), 32.0);
 
-    color = vec4(final, 1.0);
+    vec3 ambient = 0.25 * texColor;
+    vec3 diffuse = diff * texColor;
+    vec3 specular = spec * vec3(0.3);
+
+    color = vec4(ambient + diffuse + specular, 1.0);
 }

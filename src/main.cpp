@@ -47,6 +47,10 @@ public:
 	bool useAltMaterial = false;
 
 	shared_ptr<Texture> grassTex;
+	shared_ptr<Texture> doghouseTex;
+	shared_ptr<Texture> cribTex;
+	shared_ptr<Texture> shedTex;
+	shared_ptr<Texture> bedTex;
 	shared_ptr<Program> texProg;
 	shared_ptr<Program> skyboxProg;
 
@@ -96,7 +100,7 @@ public:
 		glm::mat4 N = glm::mat4(1.0f);
 	};
 
-	MeshSet table, hammer, plank, doghouse, dog, nail, bowl, plane, bunny;
+	MeshSet table, hammer, plank, doghouse, dog, nail, bowl, plane, bunny, crib, bed, shed;
 
 	float gSceneAngleY = 0.2f;
 	bool gAnimate = false;
@@ -407,6 +411,9 @@ public:
 		bowl = loadOBJAsMeshSet(resourceDirectory + "/bowl.obj");
 		plane = loadOBJAsMeshSet(resourceDirectory + "/plane.obj");
 		bunny = loadOBJAsMeshSet(resourceDirectory + "/bunnyNoNorm.obj");
+		crib = loadOBJAsMeshSet(resourceDirectory + "/cribuv.obj");
+		bed = loadOBJAsMeshSet(resourceDirectory + "/bed.obj");
+		shed = loadOBJAsMeshSet(resourceDirectory + "/shed.obj");
 	}
 
 	void initTex(const string &resourceDirectory)
@@ -416,6 +423,30 @@ public:
 		grassTex->init();
 		grassTex->setUnit(0);
 		grassTex->setWrapModes(GL_REPEAT, GL_REPEAT);
+
+		doghouseTex = make_shared<Texture>();
+		doghouseTex->setFilename(resourceDirectory + "/woodtex.jpg");
+		doghouseTex->init();
+		doghouseTex->setUnit(0);
+		doghouseTex->setWrapModes(GL_REPEAT, GL_REPEAT);
+
+		cribTex = make_shared<Texture>();
+		cribTex->setFilename(resourceDirectory + "/pine.jpg");
+		cribTex->init();
+		cribTex->setUnit(0);
+		cribTex->setWrapModes(GL_REPEAT, GL_REPEAT);
+
+		bedTex = make_shared<Texture>();
+		bedTex->setFilename(resourceDirectory + "/walnut.jpg");
+		bedTex->init();
+		bedTex->setUnit(0);
+		bedTex->setWrapModes(GL_REPEAT, GL_REPEAT);
+
+		shedTex = make_shared<Texture>();
+		shedTex->setFilename(resourceDirectory + "/shedtex.jpg");
+		shedTex->init();
+		shedTex->setUnit(0);
+		shedTex->setWrapModes(GL_REPEAT, GL_REPEAT);
 	}
 
 	// random bunny forest lmao
@@ -474,7 +505,12 @@ public:
 		for (auto &s : shapes) {
 			// i only want texture for my ground plane
 			bool tex = false;
-			if (path == "../resources/plane.obj"){
+			if (path == "../resources/plane.obj" || 
+				path == "../resources/doghouse.obj" ||
+				path == "../resources/woodplank.obj" ||
+				path == "../resources/cribuv.obj" ||
+				path == "../resources/bed.obj" ||
+				path == "../resources/shed.obj"){
 				tex = true;
 			}
 			auto shp = make_shared<Shape>(tex);
@@ -727,24 +763,45 @@ public:
 		grassTex->unbind();
 		texProg->unbind();
 		
-		lightingProg->bind();
-		glUniformMatrix4fv(lightingProg->getUniform("P"), 1, GL_FALSE, value_ptr(Projection->topMatrix()));
-		glUniformMatrix4fv(lightingProg->getUniform("V"), 1, GL_FALSE, value_ptr(View->topMatrix()));
-		glUniform3fv(lightingProg->getUniform("lightPos"), 1, value_ptr(lightPos));
-		glUniform3f(lightingProg->getUniform("LightColor"), 1.0f, 1.0f, 1.0f);
+		// lightingProg->bind();
+		// glUniformMatrix4fv(lightingProg->getUniform("P"), 1, GL_FALSE, value_ptr(Projection->topMatrix()));
+		// glUniformMatrix4fv(lightingProg->getUniform("V"), 1, GL_FALSE, value_ptr(View->topMatrix()));
+		// glUniform3fv(lightingProg->getUniform("lightPos"), 1, value_ptr(lightPos));
+		// glUniform3f(lightingProg->getUniform("LightColor"), 1.0f, 1.0f, 1.0f);
 
-		SetMaterial(lightingProg, 10);
+		// SetMaterial(lightingProg, 10);
+
+		// Model->pushMatrix();
+		// Model->translate(vec3(-3.5f, -1.35f, -2.0f));
+		// Model->rotate(radians(20.0f), vec3(0,1,0));
+		// Model->scale(vec3(1.8f));
+		// Model->multMatrix(doghouse.N);
+		// setModel(lightingProg, Model);
+		// drawMeshSet(lightingProg, doghouse);
+		// Model->popMatrix();
+
+		// lightingProg->unbind();
+
+		texProg->bind();
+
+		glUniformMatrix4fv(texProg->getUniform("P"), 1, GL_FALSE, value_ptr(Projection->topMatrix()));
+		glUniformMatrix4fv(texProg->getUniform("V"), 1, GL_FALSE, value_ptr(View->topMatrix()));
+		glUniform3fv(texProg->getUniform("lightPos"), 1, value_ptr(lightPos));
+
+		// bind doghouse texture
+		doghouseTex->bind(texProg->getUniform("Texture0"));
 
 		Model->pushMatrix();
 		Model->translate(vec3(-3.5f, -1.35f, -2.0f));
 		Model->rotate(radians(20.0f), vec3(0,1,0));
 		Model->scale(vec3(1.8f));
 		Model->multMatrix(doghouse.N);
-		setModel(lightingProg, Model);
-		drawMeshSet(lightingProg, doghouse);
+		setModel(texProg, Model);
+		drawMeshSet(texProg, doghouse);
 		Model->popMatrix();
 
-		lightingProg->unbind();
+		doghouseTex->unbind();
+		texProg->unbind();
 
 		lightingProg->bind();
 
@@ -770,6 +827,94 @@ public:
 
 		lightingProg->unbind();
 
+		texProg->bind();
+		glUniformMatrix4fv(texProg->getUniform("P"), 1, GL_FALSE, value_ptr(Projection->topMatrix()));
+		glUniformMatrix4fv(texProg->getUniform("V"), 1, GL_FALSE, value_ptr(View->topMatrix()));
+		glUniform3fv(texProg->getUniform("lightPos"), 1, value_ptr(lightPos));
+
+		doghouseTex->bind(texProg->getUniform("Texture0"));
+
+		Model->pushMatrix();
+		Model->translate(glm::vec3(2.2f, -1.25f, -1.2f));
+		Model->rotate(glm::radians(-30.0f), glm::vec3(0, 1, 0));
+		Model->scale(vec3(1.5f));
+		Model->multMatrix(plank.N);
+		setModel(texProg, Model);
+		drawMeshSet(texProg, plank);
+		Model->popMatrix();
+
+		doghouseTex->unbind();
+		texProg->unbind();
+
+		texProg->bind();
+
+		glUniformMatrix4fv(texProg->getUniform("P"), 1, GL_FALSE, value_ptr(Projection->topMatrix()));
+		glUniformMatrix4fv(texProg->getUniform("V"), 1, GL_FALSE, value_ptr(View->topMatrix()));
+		glUniform3fv(texProg->getUniform("lightPos"), 1, value_ptr(lightPos));
+
+		// DOGHOUSE
+		doghouseTex->bind(texProg->getUniform("Texture0"));
+
+		Model->pushMatrix();
+		Model->translate(vec3(-3.5f, -1.35f, -2.0f));
+		Model->rotate(radians(20.0f), vec3(0,1,0));
+		Model->scale(vec3(1.8f));
+		Model->multMatrix(doghouse.N);
+		setModel(texProg, Model);
+		drawMeshSet(texProg, doghouse);
+		Model->popMatrix();
+
+		doghouseTex->unbind();
+
+		// CRIB
+		cribTex->bind(texProg->getUniform("Texture0"));
+
+		Model->pushMatrix();
+		Model->translate(vec3(-6.2f, -1.7f, 4.0f));
+		Model->rotate(radians(20.0f), vec3(0,1,0));
+		Model->scale(vec3(1.3f));
+		Model->multMatrix(crib.N);
+		setModel(texProg, Model);
+		drawMeshSet(texProg, crib);
+		Model->popMatrix();
+
+		cribTex->unbind();
+
+		// SHED
+		shedTex->bind(texProg->getUniform("Texture0"));
+
+		Model->pushMatrix();
+
+		Model->translate(vec3(0.0f, -1.9f, 10.0f));
+		Model->rotate(radians(20.0f), vec3(0,1,0));  
+		Model->rotate(radians(160.0f), vec3(0,1,0));
+		Model->scale(vec3(3.0f, 7.0f, 3.0f));
+
+		Model->multMatrix(shed.N);
+		setModel(texProg, Model);
+		drawMeshSet(texProg, shed);
+		Model->popMatrix();
+
+		shedTex->unbind();
+
+		// BED
+		bedTex->bind(texProg->getUniform("Texture0"));
+
+		Model->pushMatrix();
+		Model->translate(vec3(0.0f, -2.1f, 8.5f));
+		Model->rotate(radians(20.0f), vec3(0,1,0));
+		Model->rotate(radians(160.0f), vec3(0,1,0));
+		Model->scale(vec3(1.85f));
+		Model->multMatrix(bed.N);
+		setModel(texProg, Model);
+		drawMeshSet(texProg, bed);
+		Model->popMatrix();
+
+		bedTex->unbind();
+
+		texProg->unbind();
+
+		texProg->unbind();
 
 		// table and stuff
 		lightingProg->bind();
@@ -788,18 +933,6 @@ public:
 		Model->multMatrix(table.N);
 		setModel(lightingProg, Model);
 		drawMeshSet(lightingProg, table);
-		Model->popMatrix();
-
-		// plank
-		SetMaterial(lightingProg, 3);
-
-		Model->pushMatrix();
-		Model->translate(glm::vec3(2.2f, -1.25f, -1.2f));
-		Model->rotate(glm::radians(-30.0f), glm::vec3(0, 1, 0));
-		Model->scale(vec3(1.5f));
-		Model->multMatrix(plank.N);
-		setModel(lightingProg, Model);
-		drawMeshSet(lightingProg, plank);
 		Model->popMatrix();
 
 		//hammer
