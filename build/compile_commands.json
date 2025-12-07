@@ -31,6 +31,12 @@
 },
 {
   "directory": "/Users/shravansheth/Desktop/calpoly/471/finalproj/471project/build",
+  "command": "/opt/homebrew/bin/aarch64-apple-darwin24-g++-14 -I/Users/shravansheth/Desktop/calpoly/471/finalproj/471project/ext -I/Users/shravansheth/Desktop/calpoly/471/finalproj/471project/ext/glad/include -I/Users/shravansheth/Desktop/calpoly/471/finalproj/471project -isystem /opt/homebrew/include -g -std=gnu++14 -arch arm64 -o CMakeFiles/BaseP2.dir/src/Particle.cpp.o -c /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/Particle.cpp",
+  "file": "/Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/Particle.cpp",
+  "output": "/Users/shravansheth/Desktop/calpoly/471/finalproj/471project/build/CMakeFiles/BaseP2.dir/src/Particle.cpp.o"
+},
+{
+  "directory": "/Users/shravansheth/Desktop/calpoly/471/finalproj/471project/build",
   "command": "/opt/homebrew/bin/aarch64-apple-darwin24-g++-14 -I/Users/shravansheth/Desktop/calpoly/471/finalproj/471project/ext -I/Users/shravansheth/Desktop/calpoly/471/finalproj/471project/ext/glad/include -I/Users/shravansheth/Desktop/calpoly/471/finalproj/471project -isystem /opt/homebrew/include -g -std=gnu++14 -arch arm64 -o CMakeFiles/BaseP2.dir/src/Program.cpp.o -c /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/Program.cpp",
   "file": "/Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/Program.cpp",
   "output": "/Users/shravansheth/Desktop/calpoly/471/finalproj/471project/build/CMakeFiles/BaseP2.dir/src/Program.cpp.o"
@@ -64,5 +70,11 @@
   "command": "/opt/homebrew/bin/aarch64-apple-darwin24-g++-14 -I/Users/shravansheth/Desktop/calpoly/471/finalproj/471project/ext -I/Users/shravansheth/Desktop/calpoly/471/finalproj/471project/ext/glad/include -I/Users/shravansheth/Desktop/calpoly/471/finalproj/471project -isystem /opt/homebrew/include -g -std=gnu++14 -arch arm64 -o CMakeFiles/BaseP2.dir/src/main.cpp.o -c /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/main.cpp",
   "file": "/Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/main.cpp",
   "output": "/Users/shravansheth/Desktop/calpoly/471/finalproj/471project/build/CMakeFiles/BaseP2.dir/src/main.cpp.o"
+},
+{
+  "directory": "/Users/shravansheth/Desktop/calpoly/471/finalproj/471project/build",
+  "command": "/opt/homebrew/bin/aarch64-apple-darwin24-g++-14 -I/Users/shravansheth/Desktop/calpoly/471/finalproj/471project/ext -I/Users/shravansheth/Desktop/calpoly/471/finalproj/471project/ext/glad/include -I/Users/shravansheth/Desktop/calpoly/471/finalproj/471project -isystem /opt/homebrew/include -g -std=gnu++14 -arch arm64 -o CMakeFiles/BaseP2.dir/src/particleSys.cpp.o -c /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/particleSys.cpp",
+  "file": "/Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/particleSys.cpp",
+  "output": "/Users/shravansheth/Desktop/calpoly/471/finalproj/471project/build/CMakeFiles/BaseP2.dir/src/particleSys.cpp.o"
 }
 ]

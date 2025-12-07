@@ -20,6 +20,7 @@
 #include "stb_image.h"
 #include "Spline.h"
 #include "Bezier.h"
+#include "particleSys.h"
 
 #define TINYOBJLOADER_IMPLEMENTATION
 #include <tiny_obj_loader/tiny_obj_loader.h>
@@ -54,6 +55,12 @@ public:
 	shared_ptr<Program> texProg;
 	shared_ptr<Program> skyboxProg;
 
+	particleSys* hammerParticles;
+	shared_ptr<Program> particleProg;
+	shared_ptr<Texture> particleTexture;
+
+	float prevUpperSwing = 0.0f;
+
 	GLuint skyboxTex;
 	GLuint skyboxVAO;
 	GLuint skyboxVBO;
@@ -84,7 +91,7 @@ public:
 	float pitch = -0.30f; // vertical rotation
 
 	float radius = 5.0f; // distance from camera to lookAt point
-	glm::vec3 camPos = glm::vec3(5, 0.0, 4.0);
+	glm::vec3 camPos = glm::vec3(7, 0.0, 4.0);
 
 	glm::vec3 camFront = glm::vec3(0.0f, 0.0f, -1.0f);
 	glm::vec3 camRight = glm::vec3(1.0f, 0.0f, 0.0f);
@@ -402,6 +409,30 @@ public:
 
 		splinepath[0] = Spline(glm::vec3(-6,0,5),glm::vec3(-1,-5,5),glm::vec3(1, 5, 5),glm::vec3(2,0,5),5.0f);
 		splinepath[1] = Spline(glm::vec3(2,0,5),glm::vec3(3,-2,5),glm::vec3(-0.25, 0.25, 5),glm::vec3(0,0,5),5.0f);
+
+		particleProg = make_shared<Program>();
+		particleProg->setVerbose(true);
+		particleProg->setShaderNames(
+			resourceDirectory + "/lab10_vert.glsl",
+			resourceDirectory + "/lab10_frag.glsl");
+		particleProg->init();
+		particleProg->addUniform("P");
+		particleProg->addUniform("V");
+		particleProg->addUniform("M");
+		particleProg->addUniform("alphaTexture");
+		particleProg->addAttribute("vertPos");
+		particleProg->addAttribute("vertColor");
+
+		// ==== Particle texture ====
+		particleTexture = make_shared<Texture>();
+		particleTexture->setFilename(resourceDirectory + "/alpha.bmp"); // or your smoke texture
+		particleTexture->init();
+		particleTexture->setUnit(0);
+		particleTexture->setWrapModes(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);
+
+		// ==== Particle System ====
+		hammerParticles = new particleSys(glm::vec3(0,0,0));
+		hammerParticles->gpuSetup();
 	}
 
 	void initGeom(const std::string& resourceDirectory)
@@ -613,7 +644,7 @@ public:
 		// ======================
 		Model->pushMatrix();
 			Model->translate(glm::vec3(-0.5f, 0.7f, 0.0f));
-			Model->rotate(radians(10.0f), glm::vec3(1,0,0));
+			Model->rotate(radians(-45.0f), glm::vec3(1,0,0));
 
 			// Upper arm
 			Model->pushMatrix();
@@ -634,56 +665,27 @@ public:
 			Model->popMatrix();
 		Model->popMatrix();
 
-
-		// // ======================
-		// // RIGHT ARM (hammering)
-		// // ======================
-		// Model->pushMatrix();
-		// 	Model->translate(glm::vec3(0.5f, 0.7f, 0.0f));
-
-		// 	float hammerAngle = radians(50.0f) * abs(sin(t * 2.5f));
-		// 	Model->rotate(radians(-70.0f) - hammerAngle, glm::vec3(1,0,0));
-
-		// 	// Upper arm
-		// 	Model->pushMatrix();
-		// 		Model->translate(glm::vec3(0.0f, -0.25f, 0.0f));
-		// 		Model->scale(glm::vec3(0.15f, 0.35f, 0.15f));
-		// 		Model->multMatrix(sphere.N);
-		// 		setModel(shader, Model);
-		// 		drawMeshSet(shader, sphere);
-		// 	Model->popMatrix();
-
-		// 	// Forearm
-		// 	Model->pushMatrix();
-		// 		Model->translate(glm::vec3(0.0f, -0.65f, 0.05f));
-		// 		Model->rotate(radians(-15.0f), glm::vec3(1,0,0));
-		// 		Model->scale(glm::vec3(0.15f, 0.35f, 0.15f));
-		// 		Model->multMatrix(sphere.N);
-		// 		setModel(shader, Model);
-		// 		drawMeshSet(shader, sphere);
-		// 	Model->popMatrix();
-
-		// 	// Hammer (optional)
-		// 	Model->pushMatrix();
-		// 		Model->translate(glm::vec3(0.0f, -0.95f, 0.1f));
-		// 		Model->rotate(radians(90.0f), glm::vec3(0,0,1));
-		// 		Model->scale(glm::vec3(0.7f));
-		// 		Model->multMatrix(hammer.N);
-		// 		setModel(shader, Model);
-		// 		drawMeshSet(shader, hammer);
-		// 	Model->popMatrix();
-		// Model->popMatrix();
-
-		// ======================
-		// RIGHT ARM (hierarchical hammering)
-		// ======================
 		Model->pushMatrix();
 			// Shoulder joint base position
 			Model->translate(glm::vec3(0.5f, 0.7f, 0.0f));
 
 			// SHOULDER ROTATION (upper arm)
-			float upperSwing = radians(-60.0f) - radians(40.0f) * abs(sin(t * 2.2f));
+			float upperSwing = radians(-60.0f) - radians(40.0f) * abs(sin(t * 1.5f));
 			Model->rotate(upperSwing, glm::vec3(1,0,0));
+
+			static bool firstFrame = true;
+			static float prevUpperSwing = 0.0f;
+
+			if (firstFrame) {
+				prevUpperSwing = upperSwing;
+				firstFrame = false;
+			}
+
+			// Trigger impact when we cross below -95° going downward
+			bool hammerImpact =
+				(prevUpperSwing < radians(-95.0f) && upperSwing <= radians(-95.0f));
+
+			prevUpperSwing = upperSwing;
 
 			// ----- UPPER ARM -----
 			Model->pushMatrix();
@@ -703,7 +705,7 @@ public:
 				Model->translate(glm::vec3(0.0f, -0.55f, 0.0f));
 
 				// ELBOW ROTATION (forearm)
-				float forearmSwing = radians(-15.0f) - radians(25.0f) * abs(sin(t * 2.2f + 0.5f));
+				float forearmSwing = radians(-15.0f) - radians(25.0f) * abs(sin(t * 1.5f + 0.5f));
 				Model->rotate(forearmSwing, glm::vec3(1,0,0));
 
 				// ----- FOREARM -----
@@ -729,11 +731,45 @@ public:
 
 					// ----- HAMMER -----
 					Model->pushMatrix();
-						Model->rotate(radians(90.0f), glm::vec3(0,0,1));
-						Model->scale(glm::vec3(0.7f));
+					Model->rotate(radians(90.0f), glm::vec3(0,0,1));
+					Model->scale(glm::vec3(0.7f));
+
+					// Compute hammer-world transform BEFORE drawing mesh
+					glm::mat4 hammerXform = Model->topMatrix();
+					glm::vec3 hammerWorldPos = glm::vec3(hammerXform * glm::vec4(-0.8f, 0.0f, -0.5f, 1));
+
+					// IMPACT DETECTION
+					static float prevAngle = 9999.0f;
+					static bool hasPrev   = false;
+
+					float currentAngle = upperSwing;  // use same swing angle for impact
+
+					bool hitBottom = false;
+					if (hasPrev) {
+						// Detect when swing is going DOWN and below threshold
+						hitBottom = (prevAngle < currentAngle) && (currentAngle > radians(-85.0f));
+					}
+
+					if (!firstFrame && hitBottom) {
+						hammerParticles->setSource(hammerWorldPos);
+						hammerParticles->enableEmission(true);
+						hammerParticles->reSet();
+					}
+
+					prevAngle = currentAngle;
+					hasPrev = true;
+					firstFrame = false;
 						Model->multMatrix(hammer.N);
 						setModel(shader, Model);
 						drawMeshSet(shader, hammer);
+						// mat4 hammerXform = Model->topMatrix();
+						// vec3 hammerWorldPos = glm::vec3(hammerXform * glm::vec4(0,0,0,1));
+						// hammerParticles->setSource(hammerWorldPos);
+						// // Detect “impact moment”
+						// // The hammer angle bottoms out → impact
+						// if (hammerImpact) {
+						// 	hammerParticles->reSet();} // burst
+						
 					Model->popMatrix();
 
 				Model->popMatrix();  // end wrist
@@ -1006,25 +1042,6 @@ public:
 
 		grassTex->unbind();
 		texProg->unbind();
-		
-		// lightingProg->bind();
-		// glUniformMatrix4fv(lightingProg->getUniform("P"), 1, GL_FALSE, value_ptr(Projection->topMatrix()));
-		// glUniformMatrix4fv(lightingProg->getUniform("V"), 1, GL_FALSE, value_ptr(View->topMatrix()));
-		// glUniform3fv(lightingProg->getUniform("lightPos"), 1, value_ptr(lightPos));
-		// glUniform3f(lightingProg->getUniform("LightColor"), 1.0f, 1.0f, 1.0f);
-
-		// SetMaterial(lightingProg, 10);
-
-		// Model->pushMatrix();
-		// Model->translate(vec3(-3.5f, -1.35f, -2.0f));
-		// Model->rotate(radians(20.0f), vec3(0,1,0));
-		// Model->scale(vec3(1.8f));
-		// Model->multMatrix(doghouse.N);
-		// setModel(lightingProg, Model);
-		// drawMeshSet(lightingProg, doghouse);
-		// Model->popMatrix();
-
-		// lightingProg->unbind();
 
 		texProg->bind();
 
@@ -1129,10 +1146,10 @@ public:
 
 		Model->pushMatrix();
 
-		Model->translate(vec3(0.0f, -1.9f, 10.0f));
+		Model->translate(vec3(0.0f, 0.0f, 10.0f));
 		Model->rotate(radians(20.0f), vec3(0,1,0));  
 		Model->rotate(radians(160.0f), vec3(0,1,0));
-		Model->scale(vec3(3.0f, 8.0f, 3.0f));
+		Model->scale(vec3(3.0f, 5.0f, 3.0f));
 
 		Model->multMatrix(shed.N);
 		setModel(texProg, Model);
@@ -1170,10 +1187,10 @@ public:
 		SetMaterial(lightingProg, 3);  // or 8 if you want "weathered wood"
 
 		Model->pushMatrix();
-		Model->translate(vec3(0.0f, -2.8f, 2.7f));
+		Model->translate(vec3(0.0f, -2.8f, 3.2f));
 		Model->rotate(radians(90.0f), vec3(0,1,0));
 		Model->rotate(radians(90.0f), vec3(-1,0,0));
-		Model->scale(vec3(2.7f));
+		Model->scale(vec3(3.2f));
 		Model->multMatrix(shop.N);
 		setModel(lightingProg, Model);
 		drawMeshSet(lightingProg, shop);
@@ -1310,7 +1327,23 @@ public:
 		drawMeshSet(lightingProg, dog);
 		Model->popMatrix();
 		lightingProg->unbind();
+
 		Model->popMatrix();
+
+		// ===== Particles =====
+		particleProg->bind();
+
+		particleTexture->bind(particleProg->getUniform("alphaTexture"));
+		glUniformMatrix4fv(particleProg->getUniform("P"), 1, GL_FALSE, value_ptr(Projection->topMatrix()));
+		glUniformMatrix4fv(particleProg->getUniform("V"), 1, GL_FALSE, value_ptr(View->topMatrix()));
+		glUniformMatrix4fv(particleProg->getUniform("M"), 1, GL_FALSE, value_ptr(glm::mat4(1.0f)));
+
+		hammerParticles->setCamera(View->topMatrix());
+		hammerParticles->update();
+		hammerParticles->drawMe(particleProg);
+
+		particleProg->unbind();
+
 		Projection->popMatrix();
 		View->popMatrix();
 	}

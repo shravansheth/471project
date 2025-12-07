@@ -1,5 +1,5 @@
-CMakeFiles/BaseP2.dir/src/main.cpp.o: \
-  /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/main.cpp \
+CMakeFiles/BaseP2.dir/src/Particle.cpp.o: \
+  /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/Particle.cpp \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__config \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__config_site \
@@ -780,6 +780,7 @@ CMakeFiles/BaseP2.dir/src/main.cpp.o: \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__fwd/stack.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/print \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/unistd.h \
+  /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/Particle.h \
   /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/ext/glad/include/glad/glad.h \
   /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/ext/glad/include/KHR/khrplatform.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/inttypes.h \
@@ -787,14 +788,6 @@ CMakeFiles/BaseP2.dir/src/main.cpp.o: \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/inttypes.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/_inttypes.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/xlocale/_inttypes.h \
-  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/chrono \
-  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__chrono/file_clock.h \
-  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/forward_list \
-  /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/GLSL.h \
-  /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/Program.h \
-  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/map \
-  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__tree \
-  /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/Shape.h \
   /opt/homebrew/include/glm/gtc/type_ptr.hpp \
   /opt/homebrew/include/glm/gtc/../gtc/quaternion.hpp \
   /opt/homebrew/include/glm/gtc/../gtc/../gtc/constants.hpp \
@@ -1064,7 +1057,8 @@ CMakeFiles/BaseP2.dir/src/main.cpp.o: \
   /opt/homebrew/include/glm/gtc/../mat4x3.hpp \
   /opt/homebrew/include/glm/gtc/../mat4x4.hpp \
   /opt/homebrew/include/glm/gtc/type_ptr.inl \
-  /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/ext/tiny_obj_loader/tiny_obj_loader.h \
+  /opt/homebrew/include/glm/gtc/matrix_transform.hpp \
+  /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/GLSL.h \
   /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/MatrixStack.h \
   /opt/homebrew/include/glm/glm.hpp \
   /opt/homebrew/include/glm/detail/_fixes.hpp \
@@ -1103,12 +1097,7 @@ CMakeFiles/BaseP2.dir/src/main.cpp.o: \
   /opt/homebrew/include/glm/integer.hpp \
   /opt/homebrew/include/glm/detail/func_integer.inl \
   /opt/homebrew/include/glm/detail/_vectorize.hpp \
-  /opt/homebrew/include/glm/gtc/matrix_transform.hpp \
-  /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/WindowManager.h \
-  /opt/homebrew/include/GLFW/glfw3.h \
-  /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/Texture.h \
-  /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/stb_image.h \
-  /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/Spline.h \
-  /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/Bezier.h \
-  /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/particleSys.h \
-  /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/Particle.h
+  /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/Program.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/map \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__tree \
+  /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/Texture.h
