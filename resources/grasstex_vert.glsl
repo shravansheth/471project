@@ -9,7 +9,7 @@ uniform mat4 M;
 
 out vec2 vTexCoord;
 out vec3 fragNor;
-out vec3 EPos;     // position in eye space
+out vec3 EPos; // position in eye space
 
 void main()
 {
