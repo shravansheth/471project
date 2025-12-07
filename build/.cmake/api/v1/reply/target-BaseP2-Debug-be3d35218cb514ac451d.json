@@ -260,7 +260,8 @@
 				37,
 				38,
 				39,
-				40
+				40,
+				41
 			]
 		}
 	],
@@ -427,6 +428,11 @@
 		{
 			"backtrace" : 1,
 			"path" : "resources/cube_vert.glsl",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 1,
+			"path" : "resources/grasstex_vert.glsl",
 			"sourceGroupIndex" : 2
 		},
 		{

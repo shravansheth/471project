@@ -71,21 +71,17 @@ public:
 	// Our shader program
 	std::shared_ptr<Program> solidColorProg;
 
-	// Shape to be used (from  file) - modify to support multiple
 	shared_ptr<Shape> mesh;
 
-	//a different mesh
-	//shared_ptr<Shape> bunny;
 
 	// My bunny forest
-	struct BunnyInstance {
+	struct TreeInstance {
     glm::vec3 pos;
     glm::vec3 rot;
     float scale;
-    //int materialID;
 	};
 
-	std::vector<BunnyInstance> bunnyForest;
+	std::vector<TreeInstance> Forest;
 
 	struct LogInstance {
 		glm::vec3 pos;
@@ -94,9 +90,6 @@ public:
 	};
 
 	std::vector<LogInstance> logPile;
-
-	// float yaw   = -1.5f; // horizontal rotation
-	// float pitch = 0.0f; // vertical rotation
 
 	float yaw   = 3.4f; // horizontal rotation
 	float pitch = -0.30f; // vertical rotation
@@ -111,7 +104,7 @@ public:
 	bool goCamera = false;
 
 	glm::vec3 g_eye = glm::vec3(0, 1, 0); // starting camera position
-	glm::vec3 g_lookAt = glm::vec3(0, 1, -4); // fixed look-at point for tour
+	glm::vec3 g_lookAt = glm::vec3(0, 1, -4);
 	float lastTimeCam = 0.0f;
 
 	// meshes struct
@@ -175,54 +168,30 @@ public:
 			useAltMaterial = !useAltMaterial;
 		}
 
-		// if (key == GLFW_KEY_G && action == GLFW_PRESS) {
-		// 	goCamera = !goCamera;
-		// 	lastTimeCam = glfwGetTime();
-
-		// 	splinepath[0] = Spline(
-		// 		glm::vec3(-6,1.5,7),
-		// 		glm::vec3(-1,0,7),
-		// 		glm::vec3(1,2,7),
-		// 		glm::vec3(2,1.5,7),
-		// 		5.0f
-		// 	);
-
-		// 	splinepath[1] = Spline(
-		// 		glm::vec3(2,1.5,7),
-		// 		glm::vec3(3,0.5,7),
-		// 		glm::vec3(-0.25, 0.25, 7),
-		// 		glm::vec3(0,0,7),
-		// 		5.0f
-		// 	);
-		// }
-
 		if (key == GLFW_KEY_G && action == GLFW_PRESS) {
 			goCamera = !goCamera;
 			lastTimeCam = glfwGetTime();
 
-			// === START FROM CURRENT CAMERA STATE ===
 			float x = radius * cos(pitch) * cos(yaw);
 			float y = radius * sin(pitch);
 			float z = radius * cos(pitch) * cos((3.14159f / 2.0f) - yaw);
 
-			glm::vec3 startPos  = camPos; // actual camera position
+			glm::vec3 startPos  = camPos;
 			glm::vec3 startLook = camPos + glm::vec3(x, y, z);
 
 			g_eye = startPos;
 			g_lookAt = startLook;
 
-			// First segment: move straight forward into the scene
 			splinepath[0] = Spline(
 				startPos,
-				startPos + glm::vec3(0.0f,  0.5f, -3.0f),   // slight lift, forward
+				startPos + glm::vec3(0.0f,  0.5f, -3.0f),
 				startPos + glm::vec3(0.0f,  0.5f, -8.0f),
 				startPos + glm::vec3(0.0f,  2.3f, -12.0f),
 				5.0f
 			);
 
-			// Second segment: continue straight down Z, maybe slight right bend
 			splinepath[1] = Spline(
-				startPos + glm::vec3(0.0f,  2.3f, -12.0f),  // must match previous end
+				startPos + glm::vec3(0.0f,  2.3f, -12.0f),
 				startPos + glm::vec3(0.5f,  0.5f, -8.0f),
 				startPos + glm::vec3(1.0f,  0.5f, -3.0f),
 				5.0f
@@ -248,7 +217,7 @@ public:
     yaw   -= deltaX * sens;
     pitch += deltaY * sens;
 
-    // clamp pitch so camera never flips
+    // clamp pitch so camera doesn't flip
     float maxPitch = glm::radians(80.0f);
     if (pitch > maxPitch) pitch = maxPitch;
     if (pitch < -maxPitch) pitch = -maxPitch;
@@ -475,14 +444,14 @@ public:
 		particleProg->addAttribute("vertPos");
 		particleProg->addAttribute("vertColor");
 
-		// ==== Particle texture ====
+		// Particle texture
 		particleTexture = make_shared<Texture>();
 		particleTexture->setFilename(resourceDirectory + "/alpha.bmp"); // or your smoke texture
 		particleTexture->init();
 		particleTexture->setUnit(0);
 		particleTexture->setWrapModes(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);
 
-		// ==== Particle System ====
+		// Particle System
 		hammerParticles = new particleSys(glm::vec3(0,0,0));
 		hammerParticles->gpuSetup();
 	}
@@ -554,33 +523,32 @@ public:
 		treeTex->setWrapModes(GL_REPEAT, GL_REPEAT);
 	}
 
-	// random bunny forest lmao
-	void generateBunnyForest() {
+	// random tree forest
+	void generateForest() {
 		int N = 25;  
-		bunnyForest.reserve(N);
+		Forest.reserve(N);
 
 		for (int i = 0; i < N; i++) {
-			BunnyInstance b;
+			TreeInstance t;
 
 			// random position
-			b.pos = glm::vec3(
+			t.pos = glm::vec3(
 				-20.0f + (rand() % 400) / 10.0f,
 				-0.9f,
 				-11.0f - (rand() % 100) / 10.0f
 			);
 
-			b.rot = glm::vec3(0, glm::radians((float)(rand() % 360)),0);
+			t.rot = glm::vec3(0, glm::radians((float)(rand() % 360)),0);
 
-			b.scale = 1.9f;
-			//b.scale = 0.45f + (rand() % 40) / 100.0f;
-			//b.materialID = rand() % 10;
+			t.scale = 1.9f;
 
-			bunnyForest.push_back(b);
+
+			Forest.push_back(t);
 		}
 	}
 
 	void generateLogPile() {
-		const int N = 25;   // number of logs
+		const int N = 25;
 		logPile.reserve(N);
 
 		for (int i = 0; i < N; i++) {
@@ -596,7 +564,7 @@ public:
 			L.rot = glm::vec3(0, yaw, 0);
 
 			// scale variation
-			L.scale = 0.7f + (rand() % 30) / 100.0f;  // 0.7 → 1.0
+			L.scale = 0.7f + (rand() % 30) / 100.0f;
 
 			logPile.push_back(L);
 		}
@@ -632,7 +600,6 @@ public:
 		ms.parts.reserve(shapes.size());
 
 		for (auto &s : shapes) {
-			// i only want texture for my ground plane
 			bool tex = false;
 			if (path == "../resources/plane.obj" || 
 				path == "../resources/doghouse.obj" ||
@@ -673,26 +640,22 @@ public:
 	{
 		float t = (float)glfwGetTime();
 
-		// =========================
-		//  ROBOT GLOBAL TRANSFORM
-		// =========================
-		glm::vec3 robotBase = glm::vec3(3.6f, -1.3f, -1.0f);   // behind the table
+		// ROBOT GLOBAL TRANSFORM
+		glm::vec3 robotBase = glm::vec3(3.6f, -1.3f, -1.0f);
 
-		SetMaterial(shader, 7); // silver material
+		SetMaterial(shader, 7);
 
 		Model->pushMatrix();
 
 		// Position robot + bounce
 		Model->translate(robotBase);
-		Model->scale(glm::vec3(0.75f));   // half-size robot
+		Model->scale(glm::vec3(0.75f));
 		Model->rotate(radians(-105.0f), glm::vec3(0,1,0));
 		float bounce = 0.05f * sin(t * 2.0f);
 		Model->translate(glm::vec3(0.0f, bounce, 0.0f));
 
 
-		// ======================
-		//        TORSO
-		// ======================
+		// TORSO
 		Model->pushMatrix();
 			Model->scale(glm::vec3(0.6f, 0.9f, 0.35f));
 			Model->multMatrix(sphere.N);
@@ -700,10 +663,7 @@ public:
 			drawMeshSet(shader, sphere);
 		Model->popMatrix();
 
-
-		// ======================
-		//         HEAD
-		// ======================
+		// HEAD
 		float headYaw = radians(20.0f) * sin(t * 1.2f);
 
 		Model->pushMatrix();
@@ -715,10 +675,7 @@ public:
 			drawMeshSet(shader, sphere);
 		Model->popMatrix();
 
-
-		// ======================
-		//        ANTENNA
-		// ======================
+		// ANTENNA
 		float antennaTilt = radians(10.0f) * sin(t * 4.0f);
 
 		Model->pushMatrix();
@@ -730,10 +687,7 @@ public:
 			drawMeshSet(shader, antenna);
 		Model->popMatrix();
 
-
-		// ======================
-		// LEFT ARM (idle)
-		// ======================
+		// LEFT ARM
 		Model->pushMatrix();
 			Model->translate(glm::vec3(-0.5f, 0.7f, 0.0f));
 			Model->rotate(radians(-45.0f), glm::vec3(1,0,0));
@@ -779,7 +733,7 @@ public:
 
 			prevUpperSwing = upperSwing;
 
-			// ----- UPPER ARM -----
+			// UPPER ARM
 			Model->pushMatrix();
 				Model->translate(glm::vec3(0.0f, -0.25f, 0.0f));
 				Model->scale(glm::vec3(0.15f, 0.35f, 0.15f));
@@ -788,10 +742,7 @@ public:
 				drawMeshSet(shader, sphere);
 			Model->popMatrix();
 
-
-			// ======================
-			//      ELBOW JOINT
-			// ======================
+			// ELBOW JOINT
 			Model->pushMatrix();
 				// move to end of upper arm
 				Model->translate(glm::vec3(0.0f, -0.55f, 0.0f));
@@ -800,7 +751,7 @@ public:
 				float forearmSwing = radians(-15.0f) - radians(25.0f) * abs(sin(t * 1.5f + 0.5f));
 				Model->rotate(forearmSwing, glm::vec3(1,0,0));
 
-				// ----- FOREARM -----
+				// FOREARM
 				Model->pushMatrix();
 					Model->translate(glm::vec3(0.0f, -0.25f, 0.05f));
 					Model->scale(glm::vec3(0.15f, 0.35f, 0.15f));
@@ -809,10 +760,7 @@ public:
 					drawMeshSet(shader, sphere);
 				Model->popMatrix();
 
-
-				// ======================
-				//       WRIST JOINT
-				// ======================
+				// WRIST JOINT
 				Model->pushMatrix();
 					// move to end of forearm
 					Model->translate(glm::vec3(0.0f, -0.7f, 0.1f));
@@ -826,7 +774,7 @@ public:
 					Model->rotate(radians(90.0f), glm::vec3(0,0,1));
 					Model->scale(glm::vec3(0.7f));
 
-					// Compute hammer-world transform BEFORE drawing mesh
+					// Compute hammer-world transform 
 					glm::mat4 hammerXform = Model->topMatrix();
 					glm::vec3 hammerWorldPos = glm::vec3(hammerXform * glm::vec4(-0.8f, 0.0f, -0.5f, 1));
 
@@ -834,7 +782,7 @@ public:
 					static float prevAngle = 9999.0f;
 					static bool hasPrev   = false;
 
-					float currentAngle = upperSwing;  // use same swing angle for impact
+					float currentAngle = upperSwing;
 
 					bool hitBottom = false;
 					if (hasPrev) {
@@ -854,26 +802,16 @@ public:
 						Model->multMatrix(hammer.N);
 						setModel(shader, Model);
 						drawMeshSet(shader, hammer);
-						// mat4 hammerXform = Model->topMatrix();
-						// vec3 hammerWorldPos = glm::vec3(hammerXform * glm::vec4(0,0,0,1));
-						// hammerParticles->setSource(hammerWorldPos);
-						// // Detect “impact moment”
-						// // The hammer angle bottoms out → impact
-						// if (hammerImpact) {
-						// 	hammerParticles->reSet();} // burst
 						
 					Model->popMatrix();
 
-				Model->popMatrix();  // end wrist
+				Model->popMatrix();
 
-			Model->popMatrix(); // end elbow
+			Model->popMatrix();
 
-		Model->popMatrix(); // end shoulder
+		Model->popMatrix();
 
-
-		// ======================
 		// STATIC LEGS
-		// ======================
 		auto drawStaticLeg = [&](float xOffset)
 		{
 			float legScale = 0.18f;
@@ -905,7 +843,7 @@ public:
 		drawStaticLeg( 0.22f);
 
 
-		Model->popMatrix(); // end robot root
+		Model->popMatrix();
 	}
 
 
@@ -913,90 +851,90 @@ public:
 	{
     switch (i)
     {
-    case 0: // red plastic
-        glUniform3f(curS->getUniform("MatAmb"), 0.1, 0.1, 0.1);
-        glUniform3f(curS->getUniform("MatDif"), 0.8, 0.1, 0.1);
-        glUniform3f(curS->getUniform("MatSpec"), 0.8, 0.8, 0.8);
-        glUniform1f(curS->getUniform("MatShine"), 32.0);
-        break;
+		case 0: // red plastic
+			glUniform3f(curS->getUniform("MatAmb"), 0.1, 0.1, 0.1);
+			glUniform3f(curS->getUniform("MatDif"), 0.8, 0.1, 0.1);
+			glUniform3f(curS->getUniform("MatSpec"), 0.8, 0.8, 0.8);
+			glUniform1f(curS->getUniform("MatShine"), 32.0);
+			break;
 
-    case 1: // green plastic
-        glUniform3f(curS->getUniform("MatAmb"), 0.1, 0.1, 0.1);
-        glUniform3f(curS->getUniform("MatDif"), 0.1, 0.8, 0.1);
-        glUniform3f(curS->getUniform("MatSpec"), 0.8, 0.8, 0.8);
-        glUniform1f(curS->getUniform("MatShine"), 16.0);
-        break;
+		case 1: // green plastic
+			glUniform3f(curS->getUniform("MatAmb"), 0.1, 0.1, 0.1);
+			glUniform3f(curS->getUniform("MatDif"), 0.1, 0.8, 0.1);
+			glUniform3f(curS->getUniform("MatSpec"), 0.8, 0.8, 0.8);
+			glUniform1f(curS->getUniform("MatShine"), 16.0);
+			break;
 
-    case 2: // blue plastic
-        glUniform3f(curS->getUniform("MatAmb"), 0.05, 0.05, 0.1);
-        glUniform3f(curS->getUniform("MatDif"), 0.1, 0.1, 0.8);
-        glUniform3f(curS->getUniform("MatSpec"), 1.0, 1.0, 1.0);
-        glUniform1f(curS->getUniform("MatShine"), 64.0);
-        break;
+		case 2: // blue plastic
+			glUniform3f(curS->getUniform("MatAmb"), 0.05, 0.05, 0.1);
+			glUniform3f(curS->getUniform("MatDif"), 0.1, 0.1, 0.8);
+			glUniform3f(curS->getUniform("MatSpec"), 1.0, 1.0, 1.0);
+			glUniform1f(curS->getUniform("MatShine"), 64.0);
+			break;
 
-    case 3: // wood
-        glUniform3f(curS->getUniform("MatAmb"), 0.20f, 0.12f, 0.05f);
-        glUniform3f(curS->getUniform("MatDif"), 0.54f, 0.36f, 0.21f);
-        glUniform3f(curS->getUniform("MatSpec"), 0.08f, 0.05f, 0.04f);
-        glUniform1f(curS->getUniform("MatShine"), 8.0f);
-        break;
+		case 3: // wood
+			glUniform3f(curS->getUniform("MatAmb"), 0.20f, 0.12f, 0.05f);
+			glUniform3f(curS->getUniform("MatDif"), 0.54f, 0.36f, 0.21f);
+			glUniform3f(curS->getUniform("MatSpec"), 0.08f, 0.05f, 0.04f);
+			glUniform1f(curS->getUniform("MatShine"), 8.0f);
+			break;
 
-    case 4: //more metal
-        glUniform3f(curS->getUniform("MatAmb"), 0.25f, 0.25f, 0.28f);
-        glUniform3f(curS->getUniform("MatDif"), 0.40f, 0.40f, 0.45f);
-        glUniform3f(curS->getUniform("MatSpec"), 0.77f, 0.77f, 0.78f);
-        glUniform1f(curS->getUniform("MatShine"), 90.0f);
-        break;
+		case 4: //more metal
+			glUniform3f(curS->getUniform("MatAmb"), 0.25f, 0.25f, 0.28f);
+			glUniform3f(curS->getUniform("MatDif"), 0.40f, 0.40f, 0.45f);
+			glUniform3f(curS->getUniform("MatSpec"), 0.77f, 0.77f, 0.78f);
+			glUniform1f(curS->getUniform("MatShine"), 90.0f);
+			break;
 
-    case 5: // stone
-        glUniform3f(curS->getUniform("MatAmb"), 0.12f, 0.12f, 0.12f);
-        glUniform3f(curS->getUniform("MatDif"), 0.35f, 0.35f, 0.35f);
-        glUniform3f(curS->getUniform("MatSpec"), 0.05f, 0.05f, 0.05f);
-        glUniform1f(curS->getUniform("MatShine"), 5.0f);
-        break;
+		case 5: // stone
+			glUniform3f(curS->getUniform("MatAmb"), 0.12f, 0.12f, 0.12f);
+			glUniform3f(curS->getUniform("MatDif"), 0.35f, 0.35f, 0.35f);
+			glUniform3f(curS->getUniform("MatSpec"), 0.05f, 0.05f, 0.05f);
+			glUniform1f(curS->getUniform("MatShine"), 5.0f);
+			break;
 
-    case 6: // goold
-        glUniform3f(curS->getUniform("MatAmb"), 0.247f, 0.199f, 0.074f);
-        glUniform3f(curS->getUniform("MatDif"), 0.751f, 0.606f, 0.226f);
-        glUniform3f(curS->getUniform("MatSpec"), 0.628f, 0.556f, 0.366f);
-        glUniform1f(curS->getUniform("MatShine"), 32.0f);
-        break;
+		case 6: // goold
+			glUniform3f(curS->getUniform("MatAmb"), 0.247f, 0.199f, 0.074f);
+			glUniform3f(curS->getUniform("MatDif"), 0.751f, 0.606f, 0.226f);
+			glUniform3f(curS->getUniform("MatSpec"), 0.628f, 0.556f, 0.366f);
+			glUniform1f(curS->getUniform("MatShine"), 32.0f);
+			break;
 
-    case 7: // silver
-        glUniform3f(curS->getUniform("MatAmb"), 0.19225f, 0.19225f, 0.19225f);
-        glUniform3f(curS->getUniform("MatDif"), 0.50754f, 0.50754f, 0.50754f);
-        glUniform3f(curS->getUniform("MatSpec"), 0.508273f, 0.508273f, 0.508273f);
-        glUniform1f(curS->getUniform("MatShine"), 51.2f);
-        break;
+		case 7: // silver
+			glUniform3f(curS->getUniform("MatAmb"), 0.19225f, 0.19225f, 0.19225f);
+			glUniform3f(curS->getUniform("MatDif"), 0.50754f, 0.50754f, 0.50754f);
+			glUniform3f(curS->getUniform("MatSpec"), 0.508273f, 0.508273f, 0.508273f);
+			glUniform1f(curS->getUniform("MatShine"), 51.2f);
+			break;
 
-	case 8: // weathered wood?
-		glUniform3f(curS->getUniform("MatAmb"), 0.15f, 0.10f, 0.04f);
-		glUniform3f(curS->getUniform("MatDif"), 0.55f, 0.30f, 0.12f);
-		glUniform3f(curS->getUniform("MatSpec"), 0.20f, 0.20f, 0.20f);
+		case 8: // weathered wood?
+			glUniform3f(curS->getUniform("MatAmb"), 0.15f, 0.10f, 0.04f);
+			glUniform3f(curS->getUniform("MatDif"), 0.55f, 0.30f, 0.12f);
+			glUniform3f(curS->getUniform("MatSpec"), 0.20f, 0.20f, 0.20f);
+			glUniform1f(curS->getUniform("MatShine"), 8.0f);
+			break;
+
+		case 9: // painted red wood?
+			glUniform3f(curS->getUniform("MatAmb"), 0.15f, 0.05f, 0.05f);
+			glUniform3f(curS->getUniform("MatDif"), 0.80f, 0.15f, 0.15f);
+			glUniform3f(curS->getUniform("MatSpec"), 0.3f, 0.3f, 0.3f);
+			glUniform1f(curS->getUniform("MatShine"), 20.0f);
+			break;
+
+		case 10: // Doghouse wood
+		glUniform3f(curS->getUniform("MatAmb"), 0.25f, 0.15f, 0.10f);
+		glUniform3f(curS->getUniform("MatDif"),  0.70f, 0.40f, 0.20f);
+		glUniform3f(curS->getUniform("MatSpec"), 0.2f, 0.15f, 0.1f);
 		glUniform1f(curS->getUniform("MatShine"), 8.0f);
 		break;
 
-	case 9: // painted red wood?
-		glUniform3f(curS->getUniform("MatAmb"), 0.15f, 0.05f, 0.05f);
-		glUniform3f(curS->getUniform("MatDif"), 0.80f, 0.15f, 0.15f);
-		glUniform3f(curS->getUniform("MatSpec"), 0.3f, 0.3f, 0.3f);
-		glUniform1f(curS->getUniform("MatShine"), 20.0f);
+		case 11: // chat dog
+		glUniform3f(curS->getUniform("MatAmb"), 0.25f, 0.20f, 0.12f);
+		glUniform3f(curS->getUniform("MatDif"), 0.65f, 0.55f, 0.30f);
+		glUniform3f(curS->getUniform("MatSpec"), 0.10f, 0.08f, 0.05f);
+		glUniform1f(curS->getUniform("MatShine"), 4.0f);
 		break;
-
-	case 10: // Doghouse wood
-    glUniform3f(curS->getUniform("MatAmb"), 0.25f, 0.15f, 0.10f);
-    glUniform3f(curS->getUniform("MatDif"),  0.70f, 0.40f, 0.20f);
-    glUniform3f(curS->getUniform("MatSpec"), 0.2f, 0.15f, 0.1f);
-    glUniform1f(curS->getUniform("MatShine"), 8.0f);
-    break;
-
-	case 11: // chat dog
-	glUniform3f(curS->getUniform("MatAmb"), 0.25f, 0.20f, 0.12f);
-	glUniform3f(curS->getUniform("MatDif"), 0.65f, 0.55f, 0.30f);
-	glUniform3f(curS->getUniform("MatSpec"), 0.10f, 0.08f, 0.05f);
-	glUniform1f(curS->getUniform("MatShine"), 4.0f);
-	break;
-    }
+	}
 	}
 
 	void updateUsingCameraPath(float deltaTime) {
@@ -1045,7 +983,6 @@ public:
 		camFront = glm::normalize(glm::vec3(x, y, z));
 		camRight = glm::normalize(glm::cross(camFront, glm::vec3(0,1,0)));
 
-		//View->lookAt(camPos, lookAtPoint, glm::vec3(0,1,0)); 
 		if (goCamera) {
 			// cinematic spline camera
 			View->loadIdentity();
@@ -1055,10 +992,9 @@ public:
 			camFront = normalize(g_lookAt - g_eye);
 
 		} else {
-			// your normal camera
+			// normal camera
 			View->lookAt(camPos, lookAtPoint, glm::vec3(0,1,0));
 		}
-		//View->rotate(glm::radians(10.0f), glm::vec3(1, 0, 0));
 		vec3 lightPos = vec3(2.0f + lightTrans, 3.0f, 4.0f);
 		
 
@@ -1141,7 +1077,6 @@ public:
 		glUniformMatrix4fv(texProg->getUniform("V"), 1, GL_FALSE, value_ptr(View->topMatrix()));
 		glUniform3fv(texProg->getUniform("lightPos"), 1, value_ptr(lightPos));
 
-		// bind doghouse texture
 		doghouseTex->bind(texProg->getUniform("Texture0"));
 
 		Model->pushMatrix();
@@ -1276,7 +1211,7 @@ public:
 		glUniform3fv(lightingProg->getUniform("lightPos"), 1, value_ptr(lightPos));
 		glUniform3f(lightingProg->getUniform("LightColor"), 1.0f, 1.0f, 1.0f);
 
-		SetMaterial(lightingProg, 3);  // or 8 if you want "weathered wood"
+		SetMaterial(lightingProg, 3);
 
 		Model->pushMatrix();
 		Model->translate(vec3(0.0f, -2.85f, 3.2f));
@@ -1314,7 +1249,6 @@ public:
 
 		Model->pushMatrix();
 		Model->translate(glm::vec3(2.2f, -1.25f, 0.0f));
-		//Model->rotate(glm::radians(-35.0f), glm::vec3(0, 1, 0));
 		Model->scale(vec3(0.3f));
 		Model->multMatrix(screwdriver.N);
 		setModel(lightingProg, Model);
@@ -1364,23 +1298,21 @@ public:
 
 		lightingProg->unbind();
 
-		// random bunny forest	
+		// random forest	
 		texProg->bind();
 		glUniformMatrix4fv(texProg->getUniform("P"), 1, GL_FALSE, value_ptr(Projection->topMatrix()));
 		glUniformMatrix4fv(texProg->getUniform("V"), 1, GL_FALSE, value_ptr(View->topMatrix()));
 		glUniform3fv(texProg->getUniform("lightPos"), 1, value_ptr(lightPos));
-		//glUniform3f(lightingProg->getUniform("LightColor"), 1.0f, 1.0f, 1.0f);
 
 		treeTex->bind(texProg->getUniform("Texture0"));
 
-		for (auto &b : bunnyForest) {
+		for (auto &f : Forest) {
 			Model->pushMatrix();
-			Model->translate(b.pos);
-			Model->rotate(b.rot.y, vec3(0,1,0));
-			Model->scale(vec3(b.scale));
+			Model->translate(f.pos);
+			Model->rotate(f.rot.y, vec3(0,1,0));
+			Model->scale(vec3(f.scale));
 			Model->multMatrix(tree.N);
 
-			//SetMaterial(lightingProg, b.materialID);
 			setModel(texProg, Model);
 			drawMeshSet(texProg, tree);
 
@@ -1450,7 +1382,7 @@ public:
 
 		Model->popMatrix();
 
-		// ===== Particles =====
+		// hammer Particles
 		particleProg->bind();
 
 		particleTexture->bind(particleProg->getUniform("alphaTexture"));
@@ -1494,7 +1426,7 @@ int main(int argc, char *argv[])
 
 	application->init(resourceDir);
 	application->initGeom(resourceDir);
-	application->generateBunnyForest();
+	application->generateForest();
 	application->generateLogPile();
 	application->initTex(resourceDir);
 
