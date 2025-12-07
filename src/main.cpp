@@ -51,8 +51,11 @@ public:
 	shared_ptr<Texture> doghouseTex;
 	shared_ptr<Texture> cribTex;
 	shared_ptr<Texture> shedTex;
+	shared_ptr<Texture> logTex;
+	shared_ptr<Texture> treeTex;
 	shared_ptr<Texture> bedTex;
 	shared_ptr<Program> texProg;
+	shared_ptr<Program> grasstexProg;
 	shared_ptr<Program> skyboxProg;
 
 	particleSys* hammerParticles;
@@ -79,19 +82,27 @@ public:
     glm::vec3 pos;
     glm::vec3 rot;
     float scale;
-    int materialID;
+    //int materialID;
 	};
 
 	std::vector<BunnyInstance> bunnyForest;
 
+	struct LogInstance {
+		glm::vec3 pos;
+		glm::vec3 rot;
+		float scale;
+	};
+
+	std::vector<LogInstance> logPile;
+
 	// float yaw   = -1.5f; // horizontal rotation
 	// float pitch = 0.0f; // vertical rotation
 
-	float yaw   = 3.2f; // horizontal rotation
+	float yaw   = 3.4f; // horizontal rotation
 	float pitch = -0.30f; // vertical rotation
 
 	float radius = 5.0f; // distance from camera to lookAt point
-	glm::vec3 camPos = glm::vec3(7, 0.0, 4.0);
+	glm::vec3 camPos = glm::vec3(7, 0.5, 4.0);
 
 	glm::vec3 camFront = glm::vec3(0.0f, 0.0f, -1.0f);
 	glm::vec3 camRight = glm::vec3(1.0f, 0.0f, 0.0f);
@@ -111,7 +122,7 @@ public:
 		glm::mat4 N = glm::mat4(1.0f);
 	};
 
-	MeshSet table, hammer, plank, doghouse, dog, nail, bowl, plane, bunny, crib, bed, shed, shop, sphere, antenna, screwdriver;
+	MeshSet table, hammer, plank, doghouse, dog, nail, bowl, plane, bunny, crib, bed, shed, shop, sphere, antenna, screwdriver, log, tree;
 
 	float gSceneAngleY = 0.2f;
 	bool gAnimate = false;
@@ -133,12 +144,6 @@ public:
 		{
 			glfwSetWindowShouldClose(window, GL_TRUE);
 		}
-		// if (key == GLFW_KEY_A && action == GLFW_PRESS) {
-		// 	gSceneAngleY += 0.05f;
-		// }
-		// if (key == GLFW_KEY_D && action == GLFW_PRESS) {
-		// 	gSceneAngleY -= 0.05f;
-		// }
 
 		if (action == GLFW_PRESS || action == GLFW_REPEAT) {
 			float speed = 0.2f;
@@ -170,25 +175,58 @@ public:
 			useAltMaterial = !useAltMaterial;
 		}
 
+		// if (key == GLFW_KEY_G && action == GLFW_PRESS) {
+		// 	goCamera = !goCamera;
+		// 	lastTimeCam = glfwGetTime();
+
+		// 	splinepath[0] = Spline(
+		// 		glm::vec3(-6,1.5,7),
+		// 		glm::vec3(-1,0,7),
+		// 		glm::vec3(1,2,7),
+		// 		glm::vec3(2,1.5,7),
+		// 		5.0f
+		// 	);
+
+		// 	splinepath[1] = Spline(
+		// 		glm::vec3(2,1.5,7),
+		// 		glm::vec3(3,0.5,7),
+		// 		glm::vec3(-0.25, 0.25, 7),
+		// 		glm::vec3(0,0,7),
+		// 		5.0f
+		// 	);
+		// }
+
 		if (key == GLFW_KEY_G && action == GLFW_PRESS) {
 			goCamera = !goCamera;
 			lastTimeCam = glfwGetTime();
 
+			// === START FROM CURRENT CAMERA STATE ===
+			float x = radius * cos(pitch) * cos(yaw);
+			float y = radius * sin(pitch);
+			float z = radius * cos(pitch) * cos((3.14159f / 2.0f) - yaw);
+
+			glm::vec3 startPos  = camPos; // actual camera position
+			glm::vec3 startLook = camPos + glm::vec3(x, y, z);
+
+			g_eye = startPos;
+			g_lookAt = startLook;
+
+			// First segment: move straight forward into the scene
 			splinepath[0] = Spline(
-				glm::vec3(-6,1.5,7),
-				glm::vec3(-1,0,7),
-				glm::vec3(1,2,7),
-				glm::vec3(2,1.5,7),
+				startPos,
+				startPos + glm::vec3(0.0f,  0.5f, -3.0f),   // slight lift, forward
+				startPos + glm::vec3(0.0f,  0.5f, -8.0f),
+				startPos + glm::vec3(0.0f,  2.3f, -12.0f),
 				5.0f
 			);
 
+			// Second segment: continue straight down Z, maybe slight right bend
 			splinepath[1] = Spline(
-				glm::vec3(2,1.5,7),
-				glm::vec3(3,0.5,7),
-				glm::vec3(-0.25, 0.25, 7),
-				glm::vec3(0,0,7),
+				startPos + glm::vec3(0.0f,  2.3f, -12.0f),  // must match previous end
+				startPos + glm::vec3(0.5f,  0.5f, -8.0f),
+				startPos + glm::vec3(1.0f,  0.5f, -3.0f),
 				5.0f
-			);
+    		);
 		}
 	}
 
@@ -310,6 +348,20 @@ public:
 		texProg->addAttribute("vertPos");
 		texProg->addAttribute("vertNor");
 		texProg->addAttribute("vertTex");
+
+		grasstexProg = make_shared<Program>();
+		grasstexProg->setVerbose(true);
+		grasstexProg->setShaderNames(resourceDirectory + "/grasstex_vert.glsl",
+								resourceDirectory + "/tex_frag.glsl");
+		grasstexProg->init();
+		grasstexProg->addUniform("P");
+		grasstexProg->addUniform("V");
+		grasstexProg->addUniform("M");
+		grasstexProg->addUniform("Texture0");
+		grasstexProg->addUniform("lightPos");
+		grasstexProg->addAttribute("vertPos");
+		grasstexProg->addAttribute("vertNor");
+		grasstexProg->addAttribute("vertTex");
 
 		skyboxProg = make_shared<Program>();
 		skyboxProg->setVerbose(true);
@@ -449,16 +501,18 @@ public:
 		crib = loadOBJAsMeshSet(resourceDirectory + "/cribuv.obj");
 		bed = loadOBJAsMeshSet(resourceDirectory + "/bed.obj");
 		shed = loadOBJAsMeshSet(resourceDirectory + "/shed.obj");
-		shop = loadOBJAsMeshSet(resourceDirectory + "/shop1.obj");
+		shop = loadOBJAsMeshSet(resourceDirectory + "/shop3.obj");
 		sphere = loadOBJAsMeshSet(resourceDirectory + "/sphere.obj");
 		antenna = loadOBJAsMeshSet(resourceDirectory + "/antenna.obj");
 		screwdriver = loadOBJAsMeshSet(resourceDirectory + "/screwdriver.obj");
+		log = loadOBJAsMeshSet(resourceDirectory + "/log.obj");
+		tree = loadOBJAsMeshSet(resourceDirectory + "/tree.obj");
 	}
 
 	void initTex(const string &resourceDirectory)
 	{
 		grassTex = make_shared<Texture>();
-		grassTex->setFilename(resourceDirectory + "/grass.jpg"); 
+		grassTex->setFilename(resourceDirectory + "/grass1.jpg"); 
 		grassTex->init();
 		grassTex->setUnit(0);
 		grassTex->setWrapModes(GL_REPEAT, GL_REPEAT);
@@ -486,30 +540,66 @@ public:
 		shedTex->init();
 		shedTex->setUnit(0);
 		shedTex->setWrapModes(GL_REPEAT, GL_REPEAT);
+
+		logTex = make_shared<Texture>();
+		logTex->setFilename(resourceDirectory + "/log.png");
+		logTex->init();
+		logTex->setUnit(0);
+		logTex->setWrapModes(GL_REPEAT, GL_REPEAT);
+
+		treeTex = make_shared<Texture>();
+		treeTex->setFilename(resourceDirectory + "/tree.png");
+		treeTex->init();
+		treeTex->setUnit(0);
+		treeTex->setWrapModes(GL_REPEAT, GL_REPEAT);
 	}
 
 	// random bunny forest lmao
 	void generateBunnyForest() {
-    int N = 15;  
-    bunnyForest.reserve(N);
+		int N = 25;  
+		bunnyForest.reserve(N);
 
-    for (int i = 0; i < N; i++) {
-        BunnyInstance b;
+		for (int i = 0; i < N; i++) {
+			BunnyInstance b;
 
-        // random position
-        b.pos = glm::vec3(
-            (rand() % 200 - 100) / 10.0f,
-            -2.3f,
-            -5.0f - (rand() % 100) / 10.0f
-        );
+			// random position
+			b.pos = glm::vec3(
+				-20.0f + (rand() % 400) / 10.0f,
+				-0.9f,
+				-11.0f - (rand() % 100) / 10.0f
+			);
 
-        b.rot = glm::vec3(0, glm::radians((float)(rand() % 360)),0);
+			b.rot = glm::vec3(0, glm::radians((float)(rand() % 360)),0);
 
-        b.scale = 0.45f + (rand() % 40) / 100.0f;
-        b.materialID = rand() % 10;
+			b.scale = 1.9f;
+			//b.scale = 0.45f + (rand() % 40) / 100.0f;
+			//b.materialID = rand() % 10;
 
-        bunnyForest.push_back(b);
-    }
+			bunnyForest.push_back(b);
+		}
+	}
+
+	void generateLogPile() {
+		const int N = 25;   // number of logs
+		logPile.reserve(N);
+
+		for (int i = 0; i < N; i++) {
+			LogInstance L;
+
+			// Position
+			float x = 10.0f + (rand() % 45) / 10.0f;
+			float z =  -4.0f + (rand() % 150) / 10.0f;
+			L.pos = glm::vec3(x, -2.55f, z);
+
+			// random rotation, lying flat
+			float yaw = radians((float)(rand() % 360));
+			L.rot = glm::vec3(0, yaw, 0);
+
+			// scale variation
+			L.scale = 0.7f + (rand() % 30) / 100.0f;  // 0.7 → 1.0
+
+			logPile.push_back(L);
+		}
 	}
 
 	/* helper for sending top of the matrix strack to GPU */
@@ -549,7 +639,9 @@ public:
 				path == "../resources/woodplank.obj" ||
 				path == "../resources/cribuv.obj" ||
 				path == "../resources/bed.obj" ||
-				path == "../resources/shed.obj"){
+				path == "../resources/shed.obj" ||
+				path == "../resources/log.obj" ||
+				path == "../resources/tree.obj"){
 				tex = true;
 			}
 			auto shp = make_shared<Shape>(tex);
@@ -632,7 +724,7 @@ public:
 		Model->pushMatrix();
 			Model->translate(glm::vec3(0.0f, 1.4f, 0.0f));
 			Model->rotate(antennaTilt, glm::vec3(0,0,1));
-			Model->scale(glm::vec3(0.5f, 0.3f, 0.2f));
+			Model->scale(glm::vec3(0.5f, 0.4f, 0.2f));
 			Model->multMatrix(antenna.N);
 			setModel(shader, Model);
 			drawMeshSet(shader, antenna);
@@ -729,7 +821,7 @@ public:
 					float wristTilt = radians(5.0f) * sin(t * 3.0f);
 					Model->rotate(wristTilt, glm::vec3(0,0,1));
 
-					// ----- HAMMER -----
+					// HAMMER
 					Model->pushMatrix();
 					Model->rotate(radians(90.0f), glm::vec3(0,0,1));
 					Model->scale(glm::vec3(0.7f));
@@ -1025,23 +1117,23 @@ public:
 		Model->pushMatrix();
 		Model->rotate(gSceneAngleY, vec3(0, -1, 0));
 
-		texProg->bind();
-		glUniformMatrix4fv(texProg->getUniform("P"), 1, GL_FALSE, value_ptr(Projection->topMatrix()));
-		glUniformMatrix4fv(texProg->getUniform("V"), 1, GL_FALSE, value_ptr(View->topMatrix()));
-		glUniform3fv(texProg->getUniform("lightPos"), 1, value_ptr(lightPos));
+		grasstexProg->bind();
+		glUniformMatrix4fv(grasstexProg->getUniform("P"), 1, GL_FALSE, value_ptr(Projection->topMatrix()));
+		glUniformMatrix4fv(grasstexProg->getUniform("V"), 1, GL_FALSE, value_ptr(View->topMatrix()));
+		glUniform3fv(grasstexProg->getUniform("lightPos"), 1, value_ptr(lightPos));
 
-		grassTex->bind(texProg->getUniform("Texture0"));
+		grassTex->bind(grasstexProg->getUniform("Texture0"));
 
 		Model->pushMatrix();
 		Model->translate(vec3(0.0f, -2.8f, 0.0f));
-		Model->scale(vec3(20.0f, 1.0f, 20.0f));
+		Model->scale(vec3(30.0f, 1.0f, 30.0f));
 		Model->multMatrix(plane.N);
-		setModel(texProg, Model);
-		drawMeshSet(texProg, plane);
+		setModel(grasstexProg, Model);
+		drawMeshSet(grasstexProg, plane);
 		Model->popMatrix();
 
 		grassTex->unbind();
-		texProg->unbind();
+		grasstexProg->unbind();
 
 		texProg->bind();
 
@@ -1187,10 +1279,10 @@ public:
 		SetMaterial(lightingProg, 3);  // or 8 if you want "weathered wood"
 
 		Model->pushMatrix();
-		Model->translate(vec3(0.0f, -2.8f, 3.2f));
+		Model->translate(vec3(0.0f, -2.85f, 3.2f));
 		Model->rotate(radians(90.0f), vec3(0,1,0));
 		Model->rotate(radians(90.0f), vec3(-1,0,0));
-		Model->scale(vec3(3.2f));
+		Model->scale(vec3(3.0f));
 		Model->multMatrix(shop.N);
 		setModel(lightingProg, Model);
 		drawMeshSet(lightingProg, shop);
@@ -1273,27 +1365,55 @@ public:
 		lightingProg->unbind();
 
 		// random bunny forest	
-		lightingProg->bind();
-		glUniformMatrix4fv(lightingProg->getUniform("P"), 1, GL_FALSE, value_ptr(Projection->topMatrix()));
-		glUniformMatrix4fv(lightingProg->getUniform("V"), 1, GL_FALSE, value_ptr(View->topMatrix()));
-		glUniform3fv(lightingProg->getUniform("lightPos"), 1, value_ptr(lightPos));
-		glUniform3f(lightingProg->getUniform("LightColor"), 1.0f, 1.0f, 1.0f);
+		texProg->bind();
+		glUniformMatrix4fv(texProg->getUniform("P"), 1, GL_FALSE, value_ptr(Projection->topMatrix()));
+		glUniformMatrix4fv(texProg->getUniform("V"), 1, GL_FALSE, value_ptr(View->topMatrix()));
+		glUniform3fv(texProg->getUniform("lightPos"), 1, value_ptr(lightPos));
+		//glUniform3f(lightingProg->getUniform("LightColor"), 1.0f, 1.0f, 1.0f);
+
+		treeTex->bind(texProg->getUniform("Texture0"));
 
 		for (auto &b : bunnyForest) {
 			Model->pushMatrix();
 			Model->translate(b.pos);
 			Model->rotate(b.rot.y, vec3(0,1,0));
 			Model->scale(vec3(b.scale));
-			Model->multMatrix(bunny.N);
+			Model->multMatrix(tree.N);
 
-			SetMaterial(lightingProg, b.materialID);
-			setModel(lightingProg, Model);
-			drawMeshSet(lightingProg, bunny);
+			//SetMaterial(lightingProg, b.materialID);
+			setModel(texProg, Model);
+			drawMeshSet(texProg, tree);
 
 			Model->popMatrix();
 		}
 
-		lightingProg->unbind();
+		treeTex->unbind();
+		texProg->unbind();
+
+		// log pile
+		texProg->bind();
+		glUniformMatrix4fv(texProg->getUniform("P"), 1, GL_FALSE, value_ptr(Projection->topMatrix()));
+		glUniformMatrix4fv(texProg->getUniform("V"), 1, GL_FALSE, value_ptr(View->topMatrix()));
+		glUniform3fv(texProg->getUniform("lightPos"), 1, value_ptr(lightPos));
+
+		logTex->bind(texProg->getUniform("Texture0"));
+
+		for (auto &L : logPile) {
+			Model->pushMatrix();
+
+			Model->translate(L.pos);
+			Model->rotate(L.rot.y, glm::vec3(0,1,0));
+			Model->scale(glm::vec3(L.scale));
+			Model->multMatrix(log.N);
+
+			setModel(texProg, Model);
+			drawMeshSet(texProg, log);
+
+			Model->popMatrix();
+		}
+
+		logTex->unbind();
+		texProg->unbind();
 
 		// robot guard
 		lightingProg->bind();
@@ -1375,6 +1495,7 @@ int main(int argc, char *argv[])
 	application->init(resourceDir);
 	application->initGeom(resourceDir);
 	application->generateBunnyForest();
+	application->generateLogPile();
 	application->initTex(resourceDir);
 
 	auto lastTime = chrono::high_resolution_clock::now();

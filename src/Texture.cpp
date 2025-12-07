@@ -29,7 +29,10 @@ void Texture::init()
 	if(!data) {
 		cerr << filename << " not found" << endl;
 	}
-	if(ncomps != 3) {
+
+	GLenum format = (ncomps == 4) ? GL_RGBA : GL_RGB;
+
+	if(ncomps != 3 && ncomps != 4) {
 		cerr << filename << " must have 3 components (RGB)" << endl;
 	}
 	if((w & (w - 1)) != 0 || (h & (h - 1)) != 0) {
@@ -44,7 +47,7 @@ void Texture::init()
 	glBindTexture(GL_TEXTURE_2D, tid);
 	// Load the actual texture data
 	// Base level is 0, number of channels is 3, and border is 0.
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+  	glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
 	// Generate image pyramid
 	glGenerateMipmap(GL_TEXTURE_2D);
 	// Set texture wrap modes for the S and T directions

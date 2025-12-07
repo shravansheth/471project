@@ -7764,11 +7764,13 @@ CMakeFiles/BaseP2.dir/src/main.cpp.o: /Users/shravansheth/Desktop/calpoly/471/fi
   /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/Bezier.h \
   /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/GLSL.h \
   /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/MatrixStack.h \
+  /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/Particle.h \
   /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/Program.h \
   /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/Shape.h \
   /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/Spline.h \
   /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/Texture.h \
   /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/WindowManager.h \
+  /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/particleSys.h \
   /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/stb_image.h \
   /opt/homebrew/include/GLFW/glfw3.h \
   /opt/homebrew/include/glm/ext/vector_float2.hpp \
@@ -8072,6 +8074,10 @@ CMakeFiles/BaseP2.dir/src/main.cpp.o: /Users/shravansheth/Desktop/calpoly/471/fi
   /opt/homebrew/include/glm/vec4.hpp \
   /opt/homebrew/include/glm/vector_relational.hpp
 
+
+/Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/particleSys.h:
+
+/Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/Particle.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/forward_list:
 

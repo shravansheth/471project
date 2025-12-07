@@ -1109,4 +1109,6 @@ CMakeFiles/BaseP2.dir/src/main.cpp.o: \
   /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/Texture.h \
   /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/stb_image.h \
   /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/Spline.h \
-  /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/Bezier.h
+  /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/Bezier.h \
+  /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/particleSys.h \
+  /Users/shravansheth/Desktop/calpoly/471/finalproj/471project/src/Particle.h

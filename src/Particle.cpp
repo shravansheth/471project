@@ -25,7 +25,7 @@ Particle::Particle(vec3 start) :
 	v(0.0f, 0.0f, 0.0f),
 	lifespan(1.0f),
 	tEnd(0.0f),
-	scale(1.0f),
+	scale(2.0f),
 	color(1.0f, 1.0f, 1.0f, 1.0f)
 {
 }
@@ -73,6 +73,7 @@ void Particle::rebirth(float t, vec3 start)
     randFloat(0.4f, 0.7f),
     randFloat(0.1f, 0.3f),
     1.0f);
+	//color = glm::vec4(0.40f, 0.22f, 0.12f, 1.0f);
 }
 
 // void Particle::update(float t, float h, const vec3 &g, const vec3 start)
