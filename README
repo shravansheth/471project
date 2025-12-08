@@ -1,0 +1,29 @@
+Name: Shrav Sheth
+User ID: ssheth01
+
+Compilation- 
+To compile the project, run:
+make
+
+Running-
+After compiling, run the executable with:
+./BaseP2
+
+Dog Animation-
+Press the SPACEBAR to trigger the dog animation.
+The dog walks from its starting location toward the bowl with a small bobbing motion for realism.
+The animation stops automatically once it reaches the bowl.
+
+Particle Effects-
+A particle system simulates wood dust or sparks when the robot’s hammer strikes the table.
+Particles burst only when the hammer hits the lowest point of the swing and then fade out as they rise.
+
+Camera Movement-
+You can freely move around the scene using the camera controls:
+W – Move forward
+S – Move backward
+A – Move left
+D – Move right
+
+The camera uses pitch and yaw controlled by the mouse/trackpad.
+This allows full free-look exploration of the environment.
